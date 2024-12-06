@@ -72,6 +72,7 @@
     <Compile Include="SteamAPI\GetAppInfo.cs" />
     <Compile Include="SteamAPI\GetFriendList.cs" />
     <Compile Include="SteamAPI\GetPlayerSummary.cs" />
+    <Compile Include="SteamAPI\Monitors.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\me.cqp.luohuaming.SteamWatcher.Sdk\me.cqp.luohuaming.SteamWatcher.Sdk.csproj">
