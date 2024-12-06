@@ -4,6 +4,8 @@ using me.cqp.luohuaming.SteamWatcher.PublicInfos;
 using System;
 using System.IO;
 using System.Reflection;
+using me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI;
+using System.Threading;
 
 namespace me.cqp.luohuaming.SteamWatcher.Code
 {
@@ -35,6 +37,19 @@ namespace me.cqp.luohuaming.SteamWatcher.Code
             AppConfig appConfig = new(Path.Combine(MainSave.AppDirectory, "Config.json"));
             appConfig.LoadConfig();
             appConfig.EnableAutoReload();
+
+            Monitors monitors = new();
+            monitors.PlayingChanged += Monitors_PlayingChanged;
+            monitors.StartCheckTimer();
+        }
+
+        private void Monitors_PlayingChanged(string msg, string pic)
+        {
+            foreach (var group in AppConfig.NoticeGroups)
+            {
+                MainSave.CQApi.SendGroupMessage(group, msg + pic);
+                Thread.Sleep(10000);
+            }
         }
     }
 }
