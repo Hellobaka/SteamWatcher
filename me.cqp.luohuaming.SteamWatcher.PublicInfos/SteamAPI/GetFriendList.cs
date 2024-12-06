@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -10,13 +11,21 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
 
         public static async Task<Friendslist> Get(string steamId)
         {
-            string url = string.Format(BaseUrl, AppConfig.WebAPIKey, steamId);
-            using HttpClient client = new();
-            var result = await client.GetAsync(url);
-            result.EnsureSuccessStatusCode();
-            var json = await result.Content.ReadAsStringAsync();
+            try
+            {
+                string url = string.Format(BaseUrl, AppConfig.WebAPIKey, steamId);
+                using HttpClient client = new();
+                var result = await client.GetAsync(url);
+                result.EnsureSuccessStatusCode();
+                var json = await result.Content.ReadAsStringAsync();
 
-            return JsonConvert.DeserializeObject<Friendslist>(json);
+                return JsonConvert.DeserializeObject<GetFriendList>(json).friendslist;
+            }
+            catch (Exception ex)
+            {
+                MainSave.CQLog.Error("GetFriendList", ex.Message + ex.StackTrace);
+                return null;
+            }
         }
 
         public Friendslist friendslist { get; set; }
