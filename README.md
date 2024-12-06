@@ -1,0 +1,2 @@
+# CoolQCSharpPluginTemplate
+ 模板
