@@ -37,7 +37,11 @@ namespace me.cqp.luohuaming.SteamWatcher.Code
             AppConfig appConfig = new(Path.Combine(MainSave.AppDirectory, "Config.json"));
             appConfig.LoadConfig();
             appConfig.EnableAutoReload();
-
+            if (string.IsNullOrEmpty(AppConfig.WebAPIKey))
+            {
+                e.CQLog.Warning("初始化", "WebAPIKey无效，请前往 https://steamcommunity.com/dev/apikey 申请");
+                return;
+            }
             Monitors monitors = new();
             monitors.PlayingChanged += Monitors_PlayingChanged;
             monitors.StartCheckTimer();
