@@ -25,7 +25,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
         /// <summary>
         /// steamId, appId
         /// </summary>
-        private Dictionary<string, string> Playing { get; set; } = [];
+        public static Dictionary<string, string> Playing { get; set; } = [];
 
         public void StartCheckTimer()
         {
@@ -38,6 +38,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             CheckTimer.AutoReset = true;
             CheckTimer.Elapsed -= CheckTimer_Elapsed;
             CheckTimer.Elapsed += CheckTimer_Elapsed;
+            CheckTimer_Elapsed(null, null);
             CheckTimer.Start();
         }
 
@@ -64,22 +65,19 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                 }
                 foreach (var item in summary.players)
                 {
-                    GetAppInfo.AppInfo info = null;
-                    if (Playing.TryGetValue(item.steamid, out var appId) && string.IsNullOrEmpty(item.gameid))
+                    if (Playing.TryGetValue(item.steamid, out var playing) && string.IsNullOrEmpty(item.gameid) && item.gameid != playing)
                     {
                         // not playing
-                        info = await GetAppInfo.Get(item.gameid);
-                        sb.AppendLine(string.Format(AppConfig.ReplyNotPlaying, item.personaname, info.data.name));
+                        sb.AppendLine(string.Format(AppConfig.ReplyNotPlaying, item.personaname, item.gameextrainfo));
                         continue;
                     }
-                    info = await GetAppInfo.Get(item.gameid);
-                    if (Playing.TryGetValue(item.steamid, out appId))
+                    if (Playing.TryGetValue(item.steamid, out playing))
                     {
-                        if (appId != item.gameid)
+                        if (playing != item.gameid)
                         {
                             // playing changed
                             Playing[item.steamid] = item.gameid;
-                            sb.AppendLine(string.Format(AppConfig.ReplyPlayingChanged, item.personaname, info.data.name));
+                            sb.AppendLine(string.Format(AppConfig.ReplyPlayingChanged, item.personaname, item.gameextrainfo));
                             continue;
                         }
                     }
@@ -87,7 +85,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                     {
                         // playing
                         Playing.Add(item.steamid, item.gameid);
-                        sb.AppendLine(string.Format(AppConfig.ReplyPlaying, item.personaname, info.data.name));
+                        sb.AppendLine(string.Format(AppConfig.ReplyPlaying, item.personaname, item.gameextrainfo));
                         continue;
                     }
                 }
@@ -97,7 +95,11 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                     FirstFetch = false;
                     return;
                 }
-                PlayingChanged?.Invoke(sb.ToString(), null);
+                var result = sb.ToString();
+                if (!string.IsNullOrEmpty(result))
+                {
+                    PlayingChanged?.Invoke(sb.ToString(), null);
+                }
             }
             catch (Exception ex)
             {
