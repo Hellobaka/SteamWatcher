@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 {
@@ -15,11 +13,20 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
         public static AppConfig Instance { get; private set; }
 
-        public static string CommandMenu { get; set; } = "";
+        public static string WebAPIKey { get; set; } = "";
+
+        public static List<string> MonitorPlayers { get; set; } = [];
+
+        public static List<long> NoticeGroups { get; set; } = [];
+
+        public static int QueryInterval { get; set; } = 60;
 
         public override void LoadConfig()
         {
-            CommandMenu = GetConfig("CommandMenu", "#菜单");
+            WebAPIKey = GetConfig("WebAPIKey", "#菜单");
+            MonitorPlayers = GetConfig("MonitorPlayers", new List<string>());
+            NoticeGroups = GetConfig("NoticeGroups", new List<long>());
+            QueryInterval = GetConfig("QueryInterval", 60);
         }
     }
 }

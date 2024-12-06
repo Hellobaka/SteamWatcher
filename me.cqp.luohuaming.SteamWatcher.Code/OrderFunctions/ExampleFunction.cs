@@ -10,7 +10,7 @@ namespace me.cqp.luohuaming.SteamWatcher.Code.OrderFunctions
 {
     public class ExampleFunction : IOrderModel
     {
-        public bool ImplementFlag { get; set; } = true;
+        public bool ImplementFlag { get; set; } = false;
 
         public int Priority { get; set; } = 10;
         
