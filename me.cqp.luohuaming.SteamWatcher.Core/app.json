@@ -1,19 +1,12 @@
 {
 	"ret": 1,
 	"apiver": 9,
-	"name": "酷Q样例应用 for C#",
+	"name": "Steam视奸机",
 	"version": "1.0.0",
 	"version_id": 1,
-	"author": "JieGG",
-	"description": "酷Q样例应用(V9应用机制)",
+	"author": "落花茗",
+	"description": "玩啥呢 不叫我",
 	"event": [
-		{
-			"id": 1,
-			"type": 21,
-			"name": "私聊消息处理",
-			"function": "_eventPrivateMsg",
-			"priority": 30000
-		},
 		{
 			"id": 2,
 			"type": 2,

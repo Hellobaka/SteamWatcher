@@ -220,11 +220,6 @@
     <Compile Include="Export\CQEventExport.cs">
       <DependentUpon>CQExport.tt</DependentUpon>
     </Compile>
-    <Compile Include="Export\CQExport.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CQExport.tt</DependentUpon>
-    </Compile>
     <Compile Include="Export\CQMenuExport.cs">
       <DependentUpon>CQExport.tt</DependentUpon>
     </Compile>
@@ -236,6 +231,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Export\CQExport.log">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CQExport.tt</DependentUpon>
+    </None>
     <None Include="FodyWeavers.xml" />
     <None Include="app.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -245,7 +245,7 @@
   <ItemGroup>
     <Content Include="Export\CQExport.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>CQExport.cs</LastGenOutput>
+      <LastGenOutput>CQExport.log</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>
