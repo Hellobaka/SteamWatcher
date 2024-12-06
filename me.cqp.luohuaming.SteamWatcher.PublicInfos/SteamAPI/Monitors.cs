@@ -23,9 +23,9 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
         private bool FirstFetch { get; set; } = true;
 
         /// <summary>
-        /// steamId, appId
+        /// steamId, (appId, name)
         /// </summary>
-        public static Dictionary<string, string> Playing { get; set; } = [];
+        public static Dictionary<string, (string, string)> Playing { get; set; } = [];
 
         public void StartCheckTimer()
         {
@@ -65,18 +65,19 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                 }
                 foreach (var item in summary.players)
                 {
-                    if (Playing.TryGetValue(item.steamid, out var playing) && string.IsNullOrEmpty(item.gameid) && item.gameid != playing)
+                    if (Playing.TryGetValue(item.steamid, out var playing) && string.IsNullOrEmpty(item.gameid) && item.gameid != playing.Item1)
                     {
                         // not playing
-                        sb.AppendLine(string.Format(AppConfig.ReplyNotPlaying, item.personaname, item.gameextrainfo));
+                        sb.AppendLine(string.Format(AppConfig.ReplyNotPlaying, item.personaname, playing.Item2));
+                        Playing.Remove(item.steamid);
                         continue;
                     }
                     if (Playing.TryGetValue(item.steamid, out playing))
                     {
-                        if (playing != item.gameid)
+                        if (playing.Item1 != item.steamid)
                         {
                             // playing changed
-                            Playing[item.steamid] = item.gameid;
+                            Playing[item.steamid] = (item.steamid, item.gameextrainfo);
                             sb.AppendLine(string.Format(AppConfig.ReplyPlayingChanged, item.personaname, item.gameextrainfo));
                             continue;
                         }
@@ -84,9 +85,12 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                     else
                     {
                         // playing
-                        Playing.Add(item.steamid, item.gameid);
-                        sb.AppendLine(string.Format(AppConfig.ReplyPlaying, item.personaname, item.gameextrainfo));
-                        continue;
+                        if (!string.IsNullOrEmpty(item.gameid))
+                        {
+                            Playing.Add(item.steamid, (item.steamid, item.gameextrainfo));
+                            sb.AppendLine(string.Format(AppConfig.ReplyPlaying, item.personaname, item.gameextrainfo));
+                            continue;
+                        }
                     }
                 }
 
