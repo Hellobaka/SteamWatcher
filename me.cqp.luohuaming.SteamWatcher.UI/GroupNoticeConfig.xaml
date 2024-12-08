@@ -36,7 +36,14 @@
                     Margin="10,0,0,0"
                     IsEditable="True"
                     IsEnabled="{Binding NotLoading}"
-                    ItemsSource="{Binding GroupLists}" />
+                    ItemsSource="{Binding GroupLists}"
+                    TextSearch.TextPath="Name">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
                 <Button
                     x:Name="AddGroup"
                     Grid.Column="2"

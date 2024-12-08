@@ -121,7 +121,8 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
                 MainWindow.ShowInfo("项目重复");
                 return;
             }
-            if (!long.TryParse(GroupList.Text, out var group))
+            string parse = GroupList.Text.Contains("[") ? GroupList.Text.Split('[').First() : GroupList.Text;
+            if (!long.TryParse(parse, out var group))
             {
                 MainWindow.ShowInfo("群号无效");
                 return;
@@ -148,11 +149,12 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
                     };
                     foreach(var steamId in item.TargetId)
                     {
+                        var configItem = ConfigLists.FirstOrDefault(x => x.SteamID == steamId);
                         i.TargetId.Add(new MonitorItemWarpper.Child
                         {
                             Parent = i,
                             SteamId = steamId,
-                            Name = steamId,
+                            Name = configItem?.Name ?? steamId,
                         });
                     }
                     GroupTreeNodes.Add(i);
@@ -165,7 +167,7 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
                     GroupLists.Add(new GroupListItem
                     {
                         GroupID = item.Group,
-                        Name = $"{item.Name}[{item.Group}]",
+                        Name = $"{item.Group}[{item.Name}]",
                     });
                 }
             }
