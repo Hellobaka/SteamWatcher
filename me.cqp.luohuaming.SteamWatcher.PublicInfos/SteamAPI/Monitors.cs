@@ -72,7 +72,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                         {
                             GameName = playing.Item2,
                             NoticeType = NoticeType.NotPlayed,
-                            SteamID = item.personaname,
+                            SteamID = item.steamid,
+                            PlayerName = item.personaname,
                             AvatarUrl = item.avatarfull
                         });
                         Playing.Remove(item.steamid);
@@ -88,7 +89,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                             {
                                 GameName = item.gameextrainfo,
                                 NoticeType = NoticeType.PlayChanged,
-                                SteamID = item.personaname,
+                                SteamID = item.steamid,
+                                PlayerName = item.personaname,
                                 AvatarUrl = item.avatarfull
                             });
                             continue;
@@ -104,7 +106,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                             {
                                 GameName = item.gameextrainfo,
                                 NoticeType = NoticeType.Playing,
-                                SteamID = item.personaname,
+                                SteamID = item.steamid,
+                                PlayerName = item.personaname,
                                 AvatarUrl = item.avatarfull
                             });
                             continue;

@@ -60,9 +60,13 @@ namespace me.cqp.luohuaming.SteamWatcher.Code
                     sb.AppendLine(notice.ToString());
                 }
                 sb.RemoveNewLine();
-                MainSave.CQApi.SendGroupMessage(item.GroupId, sb.ToString());
+                string info = sb.ToString();
+                if (!string.IsNullOrEmpty(info))
+                {
+                    MainSave.CQApi.SendGroupMessage(item.GroupId, sb.ToString());
 
-                Thread.Sleep(TimeSpan.FromSeconds(AppConfig.NoticeInterval));
+                    Thread.Sleep(TimeSpan.FromSeconds(AppConfig.NoticeInterval));
+                }
             }
         }
     }
