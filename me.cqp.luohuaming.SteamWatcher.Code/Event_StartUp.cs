@@ -6,6 +6,9 @@ using System.IO;
 using System.Reflection;
 using me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI;
 using System.Threading;
+using System.Collections.Generic;
+using System.Text;
+using System.Linq;
 
 namespace me.cqp.luohuaming.SteamWatcher.Code
 {
@@ -47,12 +50,19 @@ namespace me.cqp.luohuaming.SteamWatcher.Code
             monitors.StartCheckTimer();
         }
 
-        private void Monitors_PlayingChanged(string msg, string pic)
+        private void Monitors_PlayingChanged(List<MonitorNoticeItem> notices)
         {
-            foreach (var group in AppConfig.NoticeGroups)
+            foreach (var item in AppConfig.NoticeGroups)
             {
-                MainSave.CQApi.SendGroupMessage(group, msg + pic);
-                Thread.Sleep(10000);
+                StringBuilder sb = new();
+                foreach (var notice in notices.Where(x => item.TargetId.Any(o => o == x.SteamID)))
+                {
+                    sb.AppendLine(notice.ToString());
+                }
+                sb.RemoveNewLine();
+                MainSave.CQApi.SendGroupMessage(item.GroupId, sb.ToString());
+
+                Thread.Sleep(TimeSpan.FromSeconds(AppConfig.NoticeInterval));
             }
         }
     }

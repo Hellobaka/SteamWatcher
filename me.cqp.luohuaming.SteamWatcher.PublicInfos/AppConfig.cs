@@ -27,6 +27,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
         public static int QueryInterval { get; set; } = 60;
 
+        public static int NoticeInterval { get; set; } = 10;
+
         public override void LoadConfig()
         {
             WebAPIKey = GetConfig("WebAPIKey", "");
@@ -36,6 +38,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
             MonitorPlayers = GetConfig("MonitorPlayers", new List<string>());
             NoticeGroups = GetConfig("NoticeGroups", new List<MonitorItem>());
             QueryInterval = GetConfig("QueryInterval", 60);
+            NoticeInterval = GetConfig("NoticeInterval", 10);
         }
     }
 }

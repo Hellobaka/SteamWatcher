@@ -69,5 +69,14 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
             }
             return false;
         }
+
+        public static void RemoveNewLine(this StringBuilder stringBuilder)
+        {
+            if (stringBuilder.Length < Environment.NewLine.Length)
+            {
+                return;
+            }
+            stringBuilder.Remove(stringBuilder.Length - Environment.NewLine.Length, Environment.NewLine.Length);
+        }
     }
 }

@@ -23,4 +23,36 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
         public List<string> TargetId { get; set; }
     }
+    public enum NoticeType
+    {
+        Playing,
+      
+        PlayChanged,
+       
+        NotPlayed,
+    }
+
+    public class MonitorNoticeItem
+    {
+        public string SteamID { get; set; }
+
+        public string PlayerName { get; set; }
+
+        public string GameName { get; set; }
+
+        public NoticeType NoticeType { get; set; }
+
+        public string AvatarUrl { get; set; }
+
+        public override string ToString()
+        {
+            return NoticeType switch
+            {
+                NoticeType.Playing => string.Format(AppConfig.ReplyPlaying, PlayerName, GameName),
+                NoticeType.PlayChanged => string.Format(AppConfig.ReplyPlayingChanged, PlayerName, GameName),
+                NoticeType.NotPlayed => string.Format(AppConfig.ReplyNotPlaying, PlayerName, GameName),
+                _ => ""
+            }; 
+        }
+    }
 }

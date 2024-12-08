@@ -12,7 +12,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             Instance = this;
         }
 
-        public event Action<string, string> PlayingChanged;
+        public event Action<List<MonitorNoticeItem>> PlayingChanged;
 
         public static Monitors Instance { get; private set; }
 
@@ -57,7 +57,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             ElapsedHandling = true;
             try
             {
-                StringBuilder sb = new();
+                List<MonitorNoticeItem> notices = [];
                 var summary = await GetPlayerSummary.Get(AppConfig.MonitorPlayers);
                 if (summary == null)
                 {
@@ -68,7 +68,13 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                     if (Playing.TryGetValue(item.steamid, out var playing) && string.IsNullOrEmpty(item.gameid) && item.gameid != playing.Item1)
                     {
                         // not playing
-                        sb.AppendLine(string.Format(AppConfig.ReplyNotPlaying, item.personaname, playing.Item2));
+                        notices.Add(new MonitorNoticeItem
+                        {
+                            GameName = playing.Item2,
+                            NoticeType = NoticeType.NotPlayed,
+                            SteamID = item.personaname,
+                            AvatarUrl = item.avatarfull
+                        });
                         Playing.Remove(item.steamid);
                         continue;
                     }
@@ -78,7 +84,13 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                         {
                             // playing changed
                             Playing[item.steamid] = (item.steamid, item.gameextrainfo);
-                            sb.AppendLine(string.Format(AppConfig.ReplyPlayingChanged, item.personaname, item.gameextrainfo));
+                            notices.Add(new MonitorNoticeItem
+                            {
+                                GameName = item.gameextrainfo,
+                                NoticeType = NoticeType.PlayChanged,
+                                SteamID = item.personaname,
+                                AvatarUrl = item.avatarfull
+                            });
                             continue;
                         }
                     }
@@ -88,7 +100,13 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                         if (!string.IsNullOrEmpty(item.gameid))
                         {
                             Playing.Add(item.steamid, (item.steamid, item.gameextrainfo));
-                            sb.AppendLine(string.Format(AppConfig.ReplyPlaying, item.personaname, item.gameextrainfo));
+                            notices.Add(new MonitorNoticeItem
+                            {
+                                GameName = item.gameextrainfo,
+                                NoticeType = NoticeType.Playing,
+                                SteamID = item.personaname,
+                                AvatarUrl = item.avatarfull
+                            });
                             continue;
                         }
                     }
@@ -99,10 +117,9 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                     FirstFetch = false;
                     return;
                 }
-                var result = sb.ToString();
-                if (!string.IsNullOrEmpty(result))
+                if (notices.Count > 0)
                 {
-                    PlayingChanged?.Invoke(sb.ToString(), null);
+                    PlayingChanged?.Invoke(notices);
                 }
             }
             catch (Exception ex)
