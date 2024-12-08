@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Documents;
 
 namespace me.cqp.luohuaming.SteamWatcher.UI
 {
@@ -19,6 +20,7 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
         {
             InitializeComponent();
             DataContext = this;
+            AppConfig appConfig = new AppConfig("Config.json");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -35,6 +37,7 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
                 if (_notLoading != value)
                 {
                     _notLoading = value;
+                    Title = value ? "配置窗口" : "拉取数据中...";
                     OnPropertyChanged(nameof(NotLoading));
                 }
             }
@@ -190,14 +193,19 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
             }
         }
 
-        private void ShowError(string message)
+        public static void ShowError(string message)
         {
             MessageBox.Show(message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
-        private void ShowInfo(string message)
+        public static void ShowInfo(string message)
         {
             MessageBox.Show(message, "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        public static bool ShowConfirm(string message)
+        {
+            return MessageBox.Show(message, "提示", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
@@ -239,6 +247,13 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
             }
             OnPropertyChanged(nameof(ConfigLists));
             NotLoading = true;
+        }
+
+        private void GroupConfig_Click(object sender, RoutedEventArgs e)
+        {
+            var form = new GroupNoticeConfig();
+            form.ConfigLists = ConfigLists;
+            form.ShowDialog();
         }
     }
 }

@@ -23,7 +23,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
         public static List<string> MonitorPlayers { get; set; } = [];
 
-        public static List<long> NoticeGroups { get; set; } = [];
+        public static List<MonitorItem> NoticeGroups { get; set; } = [];
 
         public static int QueryInterval { get; set; } = 60;
 
@@ -34,7 +34,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
             ReplyPlaying = GetConfig("ReplyPlaying", "{0} 开始玩 {1} 了");
             ReplyPlayingChanged = GetConfig("ReplyPlayingChanged", "{0} 改玩 {1} 了");
             MonitorPlayers = GetConfig("MonitorPlayers", new List<string>());
-            NoticeGroups = GetConfig("NoticeGroups", new List<long>());
+            NoticeGroups = GetConfig("NoticeGroups", new List<MonitorItem>());
             QueryInterval = GetConfig("QueryInterval", 60);
         }
     }

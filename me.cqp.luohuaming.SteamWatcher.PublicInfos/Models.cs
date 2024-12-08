@@ -16,4 +16,11 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
         FunctionResult Execute(CQGroupMessageEventArgs e);
         FunctionResult Execute(CQPrivateMessageEventArgs e);
     }
+
+    public class MonitorItem
+    {
+        public long GroupId { get; set; }
+
+        public List<string> TargetId { get; set; }
+    }
 }
