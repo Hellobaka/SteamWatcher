@@ -20,7 +20,7 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
         {
             InitializeComponent();
             DataContext = this;
-            AppConfig appConfig = new AppConfig("Config.json");
+            // AppConfig appConfig = new AppConfig("Config.json");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
