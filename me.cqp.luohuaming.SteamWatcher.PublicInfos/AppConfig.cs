@@ -21,6 +21,10 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
       
         public static string ReplyPlayingChanged { get; set; } = "";
 
+        public static string CustomFont { get; set; } = "";
+
+        public static bool DrawMethod { get; set; } = true;
+
         public static List<string> MonitorPlayers { get; set; } = [];
 
         public static List<MonitorItem> NoticeGroups { get; set; } = [];
@@ -28,6 +32,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
         public static int QueryInterval { get; set; } = 60;
 
         public static int NoticeInterval { get; set; } = 10;
+
+        public static bool EnableDraw { get; set; } = true;
 
         public override void LoadConfig()
         {
@@ -39,6 +45,9 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
             NoticeGroups = GetConfig("NoticeGroups", new List<MonitorItem>());
             QueryInterval = GetConfig("QueryInterval", 60);
             NoticeInterval = GetConfig("NoticeInterval", 10);
+            EnableDraw = GetConfig("EnableDraw", true);
+            CustomFont = GetConfig("CustomFont", "微软雅黑");
+            DrawMethod = GetConfig("DrawMethod", true);
         }
     }
 }

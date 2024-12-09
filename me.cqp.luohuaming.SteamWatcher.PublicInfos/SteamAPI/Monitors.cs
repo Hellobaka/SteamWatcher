@@ -120,6 +120,13 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                     FirstFetch = false;
                     return;
                 }
+                foreach (var item in notices)
+                {
+                    if (item.DownloadAvatar())
+                    {
+                        item.ImagePath = item.Draw();
+                    }
+                }
                 if (notices.Count > 0)
                 {
                     PlayingChanged?.Invoke(notices);
@@ -127,7 +134,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             }
             catch (Exception ex)
             {
-                MainSave.CQLog.Error("监视时钟", ex.Message + ex.StackTrace);
+                MainSave.CQLog?.Error("监视时钟", ex.Message + ex.StackTrace);
             }
             finally
             {

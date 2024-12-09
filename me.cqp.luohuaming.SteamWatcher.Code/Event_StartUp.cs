@@ -9,6 +9,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using me.cqp.luohuaming.SteamWatcher.Sdk.Cqp;
 
 namespace me.cqp.luohuaming.SteamWatcher.Code
 {
@@ -58,6 +59,10 @@ namespace me.cqp.luohuaming.SteamWatcher.Code
                 foreach (var notice in notices.Where(x => item.TargetId.Any(o => o == x.SteamID)))
                 {
                     sb.AppendLine(notice.ToString());
+                    if (!string.IsNullOrEmpty(notice.ImagePath))
+                    {
+                        sb.AppendLine(CQApi.CQCode_Image(notice.ImagePath).ToSendString());
+                    }
                 }
                 sb.RemoveNewLine();
                 string info = sb.ToString();

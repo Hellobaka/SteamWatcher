@@ -20,7 +20,17 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
         {
             InitializeComponent();
             DataContext = this;
-            // AppConfig appConfig = new AppConfig("Config.json");
+            //AppConfig appConfig = new AppConfig("Config.json");
+            //Monitors monitors = new();
+            //monitors.PlayingChanged += Monitors_PlayingChanged;
+            //monitors.StartCheckTimer();
+            //MainSave.ImageDirectory = "";
+            //MainSave.AppDirectory = "";
+        }
+
+        private void Monitors_PlayingChanged(System.Collections.Generic.List<MonitorNoticeItem> obj)
+        {
+            
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
