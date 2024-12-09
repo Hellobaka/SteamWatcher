@@ -98,6 +98,7 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
             if (summaries == null)
             {
                 ShowError("拉取项目时出现错误");
+                NotLoading = true;
                 return;
             }
             string name = "";
@@ -138,12 +139,14 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
             if (list == null)
             {
                 ShowError("拉取项目时出现错误");
+                NotLoading = true;
                 return;
             }
             var summaries = await GetPlayerSummary.Get(list.friends.Select(x => x.steamid).ToList());
             if (summaries == null)
             {
                 ShowError("拉取项目时出现错误");
+                NotLoading = true;
                 return;
             }
             foreach (var item in list.friends)
@@ -226,11 +229,17 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
                 ShowError("WebAPIKey无效，请前往 https://steamcommunity.com/dev/apikey 申请");
                 return;
             }
+            if (AppConfig.MonitorPlayers.Count == 0)
+            {
+                NotLoading = true;
+                return;
+            }
 
             var summaries = await GetPlayerSummary.Get(AppConfig.MonitorPlayers);
             if (summaries == null)
             {
                 ShowError("拉取项目时出现错误");
+                NotLoading = true;
                 return;
             }
             foreach (var item in summaries.players)

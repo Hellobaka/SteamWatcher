@@ -58,6 +58,10 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             try
             {
                 List<MonitorNoticeItem> notices = [];
+                if (AppConfig.MonitorPlayers.Count == 0)
+                {
+                    return;
+                }
                 var summary = await GetPlayerSummary.Get(AppConfig.MonitorPlayers);
                 if (summary == null)
                 {
