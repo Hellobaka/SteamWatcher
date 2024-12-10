@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Timers;
 
@@ -124,7 +125,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                     FirstFetch = false;
                     return;
                 }
-                foreach (var item in notices)
+                foreach (var item in notices.Where(x => x.NoticeType == NoticeType.Playing))
                 {
                     if (item.DownloadAvatar())
                     {

@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Text;
 using System.IO;
 using System.Text;
+using me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI;
 using me.cqp.luohuaming.SteamWatcher.Sdk.Cqp.EventArgs;
+using SkiaSharp;
 
 namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 {
@@ -53,8 +52,6 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
         private static byte[] BackgroundImageBuffer {  get; set; }
 
-        private static Font Font { get; set; } 
-
         public override string ToString()
         {
             return NoticeType switch
@@ -92,27 +89,16 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
                 BackgroundImageBuffer = File.ReadAllBytes(backgroundFilePath);
             }
             Directory.CreateDirectory(Path.Combine(MainSave.ImageDirectory, "SteamWatcher"));
-            using MemoryStream memoryStream = new(BackgroundImageBuffer);
-            using Bitmap img = (Bitmap)Image.FromStream(memoryStream);
-            using Graphics g = Graphics.FromImage(img);
-            using Bitmap avatar = (Bitmap)Image.FromFile(avatarPath);
-            g.SmoothingMode = SmoothingMode.HighQuality;
-            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-            g.TextRenderingHint = AppConfig.DrawMethod ? TextRenderingHint.ClearTypeGridFit : TextRenderingHint.AntiAliasGridFit;
+            using Painting painting = new(353, 87);
+            painting.DrawImage(painting.LoadImageFromBuffer(BackgroundImageBuffer), new(0, 0, 353, 87));
+            painting.DrawImage(painting.LoadImage(avatarPath), new SKRect() { Location=new(13,16), Size = new(55,55) });
+            painting.DrawRectangle(new() { Location = new(68,16), Size = new(3,55) }, SKColor.Parse("#59bf40"), SKColors.Black, 0);
+            painting.DrawText(PlayerName, Painting.Anywhere, new SKPoint(85,13), SKColor.Parse("#d8f4ba"), 14);
+            painting.DrawText("正在玩", Painting.Anywhere, new SKPoint(85,33), SKColor.Parse("#969696"), 14);
+            painting.DrawText(GameName, Painting.Anywhere, new SKPoint(85,55), SKColor.Parse("#91c257"), 14);
 
-            Font ??= new(AppConfig.CustomFont, 14 * 72f / g.DpiY);
-
-            g.DrawImage(avatar, new Rectangle(new Point(13, 16), new Size(55, 55)));
-            g.FillRectangle(new SolidBrush(ColorTranslator.FromHtml("#59bf40")), new Rectangle(new Point(68, 16), new Size(3, 55)));
-
-            g.DrawString(PlayerName, Font, new SolidBrush(ColorTranslator.FromHtml("#d8f4ba")), new PointF(85, 14));
-            g.DrawString("正在玩", Font, new SolidBrush(ColorTranslator.FromHtml("#969696")), new PointF(85, 36));
-            g.DrawString(GameName, Font, new SolidBrush(ColorTranslator.FromHtml("#91c257")), new PointF(85, 56));
-            
-            string filePath = Path.Combine("SteamWatcher", $"{DateTime.Now:yyyyMMddHHmmss}.png");
-            img.Save(Path.Combine(MainSave.ImageDirectory, filePath));
-
+            string filePath = Path.Combine("SteamWatcher", $"{Guid.NewGuid()}.png");
+            painting.Save(Path.Combine(MainSave.ImageDirectory, filePath));
             return filePath;
         }
     }

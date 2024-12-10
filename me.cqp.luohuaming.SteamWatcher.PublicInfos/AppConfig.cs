@@ -23,6 +23,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
         public static string CustomFont { get; set; } = "";
 
+        public static string CustomFontPath { get; set; } = "";
+
         public static bool DrawMethod { get; set; } = true;
 
         public static List<string> MonitorPlayers { get; set; } = [];
@@ -47,7 +49,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
             NoticeInterval = GetConfig("NoticeInterval", 10);
             EnableDraw = GetConfig("EnableDraw", true);
             CustomFont = GetConfig("CustomFont", "微软雅黑");
-            DrawMethod = GetConfig("DrawMethod", true);
+            CustomFontPath = GetConfig("CustomFontPath", "");
         }
     }
 }
