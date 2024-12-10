@@ -10,7 +10,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
     {
         public const string BaseUrl = "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key={0}&steamids={1}";
 
-        public static async Task<PlayerSummary> Get(List<string> steamId)
+        public static async Task<PlayerSummary> Get(List<string> steamId, bool fetchMore = true)
         {
             try
             {
@@ -20,7 +20,20 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                 result.EnsureSuccessStatusCode();
                 var json = await result.Content.ReadAsStringAsync();
 
-                return JsonConvert.DeserializeObject<GetPlayerSummary>(json).response;
+                var response = JsonConvert.DeserializeObject<GetPlayerSummary>(json).response;
+                if (fetchMore)
+                {
+                    foreach(var item in response.players)
+                    {
+                        var appInfo = await GetAppInfo.Get(item.gameid);
+                        item.gameextrainfo = appInfo.data.name;
+                    }
+                    return response;
+                }
+                else
+                {
+                    return response;
+                }
             }
             catch (Exception ex)
             {

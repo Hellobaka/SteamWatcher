@@ -37,6 +37,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
         public static bool EnableDraw { get; set; } = true;
 
+        public static string AppInfoLanguage { get; set; } = "schinese";
+
         public override void LoadConfig()
         {
             WebAPIKey = GetConfig("WebAPIKey", "");
@@ -50,6 +52,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
             EnableDraw = GetConfig("EnableDraw", true);
             CustomFont = GetConfig("CustomFont", "微软雅黑");
             CustomFontPath = GetConfig("CustomFontPath", "");
+            AppInfoLanguage = GetConfig("AppInfoLanguage", "schinese");
         }
     }
 }

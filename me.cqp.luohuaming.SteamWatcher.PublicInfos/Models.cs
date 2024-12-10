@@ -30,9 +30,9 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
     public enum NoticeType
     {
         Playing,
-      
+
         PlayChanged,
-       
+
         NotPlayed,
     }
 
@@ -50,7 +50,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
         public string ImagePath { get; set; }
 
-        private static byte[] BackgroundImageBuffer {  get; set; }
+        private static byte[] BackgroundImageBuffer { get; set; }
 
         public override string ToString()
         {
@@ -60,7 +60,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
                 NoticeType.PlayChanged => string.Format(AppConfig.ReplyPlayingChanged, PlayerName, GameName),
                 NoticeType.NotPlayed => string.Format(AppConfig.ReplyNotPlaying, PlayerName, GameName),
                 _ => ""
-            }; 
+            };
         }
 
         public bool DownloadAvatar()
@@ -76,6 +76,10 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
         public string? Draw()
         {
+            if (!AppConfig.EnableDraw)
+            {
+                return null;
+            }
             string backgroundFilePath = Path.Combine(MainSave.AppDirectory, "Assets", "Frame.png");
             string avatarPath = Path.Combine(MainSave.ImageDirectory, "SteamWatcher", "Avatar", $"{SteamID}.png");
             if (!File.Exists(backgroundFilePath)
@@ -84,18 +88,18 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
                 MainSave.CQLog.Warning("绘制图片", $"由于无法找到图片，无法进行绘制");
                 return null;
             }
-            if (BackgroundImageBuffer  == null || BackgroundImageBuffer.Length == 0)
+            if (BackgroundImageBuffer == null || BackgroundImageBuffer.Length == 0)
             {
                 BackgroundImageBuffer = File.ReadAllBytes(backgroundFilePath);
             }
             Directory.CreateDirectory(Path.Combine(MainSave.ImageDirectory, "SteamWatcher"));
             using Painting painting = new(353, 87);
             painting.DrawImage(painting.LoadImageFromBuffer(BackgroundImageBuffer), new(0, 0, 353, 87));
-            painting.DrawImage(painting.LoadImage(avatarPath), new SKRect() { Location=new(13,16), Size = new(55,55) });
-            painting.DrawRectangle(new() { Location = new(68,16), Size = new(3,55) }, SKColor.Parse("#59bf40"), SKColors.Black, 0);
-            painting.DrawText(PlayerName, Painting.Anywhere, new SKPoint(85,13), SKColor.Parse("#d8f4ba"), 14);
-            painting.DrawText("正在玩", Painting.Anywhere, new SKPoint(85,33), SKColor.Parse("#969696"), 14);
-            painting.DrawText(GameName, Painting.Anywhere, new SKPoint(85,55), SKColor.Parse("#91c257"), 14);
+            painting.DrawImage(painting.LoadImage(avatarPath), new SKRect() { Location = new(13, 16), Size = new(55, 55) });
+            painting.DrawRectangle(new() { Location = new(68, 16), Size = new(3, 55) }, SKColor.Parse("#59bf40"), SKColors.Black, 0);
+            painting.DrawText(PlayerName, Painting.Anywhere, new SKPoint(85, 13), SKColor.Parse("#d8f4ba"), 14);
+            painting.DrawText("正在玩", Painting.Anywhere, new SKPoint(85, 33), SKColor.Parse("#969696"), 14);
+            painting.DrawText(GameName, new() { Location = new(85, 55), Right = 340 }, new SKPoint(85, 55), SKColor.Parse("#91c257"), 14);
 
             string filePath = Path.Combine("SteamWatcher", $"{Guid.NewGuid()}.png");
             painting.Save(Path.Combine(MainSave.ImageDirectory, filePath));

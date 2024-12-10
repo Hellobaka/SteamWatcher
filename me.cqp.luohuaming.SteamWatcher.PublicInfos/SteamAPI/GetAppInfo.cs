@@ -8,7 +8,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
 {
     public class GetAppInfo
     {
-        public const string BaseUrl = "https://store.steampowered.com/api/appdetails?appids={0}";
+        public const string BaseUrl = "https://store.steampowered.com/api/appdetails?appids={0}&l={1}&filters=basic";
 
         private static Dictionary<string, AppInfo> Caches { get; set; } = [];
 
@@ -18,15 +18,15 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             {
                 return appInfo;
             }
-            string url = string.Format(BaseUrl, appId);
+            string url = string.Format(BaseUrl, appId, AppConfig.AppInfoLanguage);
             using HttpClient client = new();
             var result = await client.GetAsync(url);
             result.EnsureSuccessStatusCode();
             var json = await result.Content.ReadAsStringAsync();
             var o = JObject.Parse(json);
 
-            appInfo = o.Children().First().ToObject<AppInfo>();
-            if (appInfo != null)
+            appInfo = o[appId].ToObject<AppInfo>();
+            if (appInfo != null && !Caches.ContainsKey(appId))
             {
                 Caches.Add(appId, appInfo);
             }
