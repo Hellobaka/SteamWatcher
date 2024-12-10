@@ -99,7 +99,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
             painting.DrawRectangle(new() { Location = new(68, 16), Size = new(3, 55) }, SKColor.Parse("#59bf40"), SKColors.Black, 0);
             painting.DrawText(PlayerName, Painting.Anywhere, new SKPoint(85, 13), SKColor.Parse("#d8f4ba"), 14);
             painting.DrawText("正在玩", Painting.Anywhere, new SKPoint(85, 33), SKColor.Parse("#969696"), 14);
-            painting.DrawText(GameName, new() { Location = new(85, 55), Right = 340 }, new SKPoint(85, 55), SKColor.Parse("#91c257"), 14);
+            painting.DrawText(GameName, new() { Left = 85, Right = 340 }, new SKPoint(85, 55), SKColor.Parse("#91c257"), 14);
 
             string filePath = Path.Combine("SteamWatcher", $"{Guid.NewGuid()}.png");
             painting.Save(Path.Combine(MainSave.ImageDirectory, filePath));
