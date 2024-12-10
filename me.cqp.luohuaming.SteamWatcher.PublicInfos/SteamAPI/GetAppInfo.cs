@@ -14,6 +14,10 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
 
         public static async Task<AppInfo?> Get(string appId)
         {
+            if (string.IsNullOrEmpty(appId))
+            {
+                return null;
+            }
             if (Caches.TryGetValue(appId, out AppInfo appInfo))
             {
                 return appInfo;

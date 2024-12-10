@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -23,10 +24,13 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                 var response = JsonConvert.DeserializeObject<GetPlayerSummary>(json).response;
                 if (fetchMore)
                 {
-                    foreach(var item in response.players)
+                    foreach (var item in response.players.Where(x => !string.IsNullOrEmpty(x.gameid)))
                     {
                         var appInfo = await GetAppInfo.Get(item.gameid);
-                        item.gameextrainfo = appInfo.data.name;
+                        if (appInfo != null)
+                        {
+                            item.gameextrainfo = appInfo.data.name;
+                        }
                     }
                     return response;
                 }
@@ -52,9 +56,9 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
         public class Player
         {
             public string steamid { get; set; }
-          
+
             public string personaname { get; set; }
-          
+
             public string avatarfull { get; set; }
 
             public string gameid { get; set; }
