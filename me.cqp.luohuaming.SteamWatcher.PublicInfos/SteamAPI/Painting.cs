@@ -242,12 +242,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
 
                 if (currentX + shapedText.Width > area.Right)
                 {
-                    currentX = area.Left;
-                    currentY += lineHeight;
-                }
-                if (area.Bottom != 0 && currentY > area.Bottom)
-                {
-                    currentY -= lineHeight;
+                    MainCanvas.DrawShapedText("...", currentX, currentY, paint);
                     break;
                 }
                 MainCanvas.DrawShapedText(textElement, currentX, currentY, paint);
