@@ -106,6 +106,14 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                         // playing
                         if (!string.IsNullOrEmpty(item.gameid))
                         {
+                            if (item.personastate == 0 && AppConfig.HideIfOfflineStatus)
+                            {
+                                continue;
+                            }
+                            if (AppConfig.GameNameFilter.Any(item.gameextrainfo.Contains))
+                            {
+                                continue;
+                            }
                             Playing.Add(item.steamid, (item.steamid, item.gameextrainfo));
                             notices.Add(new MonitorNoticeItem
                             {

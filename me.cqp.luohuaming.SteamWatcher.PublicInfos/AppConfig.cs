@@ -37,7 +37,11 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
         public static bool EnableDraw { get; set; } = true;
 
+        public static bool HideIfOfflineStatus { get; set; } = true;
+
         public static string AppInfoLanguage { get; set; } = "schinese";
+
+        public static List<string> GameNameFilter { get; set; } = [];
 
         public override void LoadConfig()
         {
@@ -46,10 +50,12 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
             ReplyPlaying = GetConfig("ReplyPlaying", "{0} 开始玩 {1} 了");
             ReplyPlayingChanged = GetConfig("ReplyPlayingChanged", "{0} 改玩 {1} 了");
             MonitorPlayers = GetConfig("MonitorPlayers", new List<string>());
+            GameNameFilter = GetConfig("GameNameFilter", new List<string>());
             NoticeGroups = GetConfig("NoticeGroups", new List<MonitorItem>());
             QueryInterval = GetConfig("QueryInterval", 60);
             NoticeInterval = GetConfig("NoticeInterval", 10);
             EnableDraw = GetConfig("EnableDraw", true);
+            HideIfOfflineStatus = GetConfig("HideIfOfflineStatus", true);
             CustomFont = GetConfig("CustomFont", "微软雅黑");
             CustomFontPath = GetConfig("CustomFontPath", "");
             AppInfoLanguage = GetConfig("AppInfoLanguage", "schinese");

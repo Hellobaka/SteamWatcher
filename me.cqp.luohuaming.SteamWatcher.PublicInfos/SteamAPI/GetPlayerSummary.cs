@@ -64,6 +64,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             public string gameid { get; set; }
 
             public string gameextrainfo { get; set; }
+
+            public int personastate { get; set; }
         }
     }
 }
