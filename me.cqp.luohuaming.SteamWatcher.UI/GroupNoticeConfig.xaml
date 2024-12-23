@@ -57,7 +57,7 @@
                 <TreeView x:Name="GroupTree" ItemsSource="{Binding GroupTreeNodes}">
                     <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding TargetId}">
-                            <TextBlock Text="{Binding GroupId}" />
+                            <TextBlock Text="{Binding Name}" />
                             <HierarchicalDataTemplate.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Name}" />

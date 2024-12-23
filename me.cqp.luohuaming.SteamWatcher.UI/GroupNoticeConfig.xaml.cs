@@ -130,6 +130,7 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
             GroupTreeNodes.Add(new()
             {
                 GroupId = group,
+                Name = GroupList.Text,
                 TargetId = []
             });
             OnPropertyChanged(nameof(GroupTreeNodes));
@@ -140,11 +141,25 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
             NotLoading = false;
             try
             {
+                var list = MainSave.CQApi?.GetGroupList();
+                if (list != null)
+                {
+                    foreach (var item in list)
+                    {
+                        GroupLists.Add(new GroupListItem
+                        {
+                            GroupID = item.Group,
+                            Name = $"{item.Group}[{item.Name}]",
+                        });
+                    }
+                }
+
                 foreach (var item in AppConfig.NoticeGroups)
                 {
                     var i = new MonitorItemWarpper()
                     {
                         GroupId = item.GroupId,
+                        Name = GroupLists.FirstOrDefault(x => x.GroupID == item.GroupId)?.Name ?? item.GroupId.ToString(),
                         TargetId = []
                     };
                     foreach(var steamId in item.TargetId)
@@ -161,15 +176,6 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
                 }
                 OnPropertyChanged(nameof(GroupLists));
                 OnPropertyChanged(nameof(ConfigLists));
-                var list = MainSave.CQApi.GetGroupList();
-                foreach (var item in list)
-                {
-                    GroupLists.Add(new GroupListItem
-                    {
-                        GroupID = item.Group,
-                        Name = $"{item.Group}[{item.Name}]",
-                    });
-                }
             }
             catch (Exception ex)
             {

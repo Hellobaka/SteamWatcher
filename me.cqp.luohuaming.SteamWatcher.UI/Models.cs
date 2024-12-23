@@ -46,6 +46,8 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
     {
         public long GroupId { get; set; }
 
+        public string Name { get; set; }
+
         public ObservableCollection<Child> TargetId { get; set; }
 
         public class Child
