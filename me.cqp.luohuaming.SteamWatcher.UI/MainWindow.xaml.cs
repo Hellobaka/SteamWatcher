@@ -1,9 +1,12 @@
 using me.cqp.luohuaming.SteamWatcher.PublicInfos;
 using me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI;
+using me.cqp.luohuaming.SteamWatcher.Sdk.Cqp;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Windows;
 using System.Windows.Documents;
 
@@ -20,17 +23,27 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
         {
             InitializeComponent();
             DataContext = this;
-            //AppConfig appConfig = new AppConfig("Config.json");
-            //Monitors monitors = new();
-            //monitors.PlayingChanged += Monitors_PlayingChanged;
-            //monitors.StartCheckTimer();
-            //MainSave.ImageDirectory = "";
-            //MainSave.AppDirectory = "";
+            AppConfig appConfig = new AppConfig("Config.json");
+            Monitors monitors = new();
+            monitors.PlayingChanged += Monitors_PlayingChanged;
+            monitors.StartCheckTimer();
+            MainSave.ImageDirectory = "";
+            MainSave.AppDirectory = "";
         }
 
-        private void Monitors_PlayingChanged(System.Collections.Generic.List<MonitorNoticeItem> obj)
+        private void Monitors_PlayingChanged(System.Collections.Generic.List<MonitorNoticeItem> notices)
         {
-            
+            StringBuilder sb = new();
+            foreach (var notice in notices)
+            {
+                sb.AppendLine(notice.ToString());
+                if (!string.IsNullOrEmpty(notice.ImagePath))
+                {
+                    sb.AppendLine(CQApi.CQCode_Image(notice.ImagePath).ToSendString());
+                }
+            }
+            sb.RemoveNewLine();
+            Debug.WriteLine(sb.ToString());
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

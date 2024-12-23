@@ -116,7 +116,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                                 foreach (var achievement in achievements)
                                 {
                                     // get achievement
-                                    if (!playing.Achievements.Any(x => x.apiname == achievement.apiname))
+                                    var original = playing.Achievements.FirstOrDefault(x => x.apiname == achievement.apiname);
+                                    if (original != null && original.achieved == 0 && achievement.achieved == 1)
                                     {
                                         var achievementDetail = await GetAppAchievements.Get(item.gameid, achievement.apiname);
                                         if (achievementDetail != null)
