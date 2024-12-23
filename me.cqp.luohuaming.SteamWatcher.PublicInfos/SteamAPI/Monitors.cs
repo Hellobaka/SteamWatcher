@@ -130,7 +130,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                                                 AchievementID = achievementDetail.name,
                                                 AchievementName = achievementDetail.displayName,
                                                 AvatarUrl = achievementDetail.icon,
-                                                PlayerName = item.personaname
+                                                PlayerName = item.personaname,
+                                                SteamID = item.steamid
                                             };
                                             var percent = await GetGlobalAchievementStat.Get(item.gameid, achievement.apiname);
                                             notice.Extra = percent > 0 ? $"全球解锁率：{percent:f1}%" : "";
