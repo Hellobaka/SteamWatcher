@@ -24,4 +24,6 @@ Bot is Watching you.👁️
 - [Assets.zip](https://github.com/Hellobaka/SteamWatcher/releases/download/1.0.0/Assets.zip)
 - 解压后放置在插件的数据目录内，保留 Assets 文件夹
 
-![image](https://github.com/user-attachments/assets/34b0b9de-cba9-4d0b-9721-391e7be85959)
+![image](https://github.com/user-attachments/assets/e8fe651e-7b38-4ae3-9aaa-e13096270f98)
+![image](https://github.com/user-attachments/assets/7c9f5eda-d2be-456c-94fc-0b4d9701381b)
+
