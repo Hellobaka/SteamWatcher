@@ -273,6 +273,14 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
             var form = new GroupNoticeConfig();
             form.ConfigLists = ConfigLists;
             form.ShowDialog();
+            form.Close();
+        }
+
+        private void ParamButton_Click(object sender, RoutedEventArgs e)
+        {
+            var form = new ParamSetting();
+            form.ShowDialog();
+            form.Close();
         }
     }
 }

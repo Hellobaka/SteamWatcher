@@ -27,8 +27,6 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
         public static string CustomFontPath { get; set; } = "";
 
-        public static bool DrawMethod { get; set; } = true;
-
         public static List<string> MonitorPlayers { get; set; } = [];
 
         public static List<MonitorConfigItem> NoticeGroups { get; set; } = [];
