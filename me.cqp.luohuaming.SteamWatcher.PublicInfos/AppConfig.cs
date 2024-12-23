@@ -29,13 +29,17 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
         public static List<string> MonitorPlayers { get; set; } = [];
 
-        public static List<MonitorItem> NoticeGroups { get; set; } = [];
+        public static List<MonitorConfigItem> NoticeGroups { get; set; } = [];
 
         public static int QueryInterval { get; set; } = 60;
 
         public static int NoticeInterval { get; set; } = 10;
 
         public static bool EnableDraw { get; set; } = true;
+
+        public static bool EnableAchievementNotice { get; set; } = true;
+
+        public static bool EnableSessionDurationNotice { get; set; } = true;
 
         public static bool HideIfOfflineStatus { get; set; } = true;
 
@@ -51,11 +55,13 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
             ReplyPlayingChanged = GetConfig("ReplyPlayingChanged", "{0} 改玩 {1} 了");
             MonitorPlayers = GetConfig("MonitorPlayers", new List<string>());
             GameNameFilter = GetConfig("GameNameFilter", new List<string>());
-            NoticeGroups = GetConfig("NoticeGroups", new List<MonitorItem>());
+            NoticeGroups = GetConfig("NoticeGroups", new List<MonitorConfigItem>());
             QueryInterval = GetConfig("QueryInterval", 60);
             NoticeInterval = GetConfig("NoticeInterval", 10);
             EnableDraw = GetConfig("EnableDraw", true);
             HideIfOfflineStatus = GetConfig("HideIfOfflineStatus", true);
+            EnableAchievementNotice = GetConfig("EnableAchievementNotice", true);
+            EnableSessionDurationNotice = GetConfig("EnableSessionDurationNotice", true);
             CustomFont = GetConfig("CustomFont", "微软雅黑");
             CustomFontPath = GetConfig("CustomFontPath", "");
             AppInfoLanguage = GetConfig("AppInfoLanguage", "schinese");

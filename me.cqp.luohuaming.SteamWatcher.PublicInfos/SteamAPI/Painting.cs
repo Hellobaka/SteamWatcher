@@ -180,13 +180,12 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
         /// <param name="customFont">自定义字体</param>
         /// <param name="fontSize">字体大小</param>
         /// <returns>最后一个字符的右下角坐标</returns>
-        public SKPoint DrawText(string text, SKRect area, SKPoint startPoint, SKColor color, float fontSize = 26, SKTypeface customFont = null, bool isBold = false)
+        public SKPoint DrawText(string text, SKRect area, SKPoint startPoint, SKColor color, float fontSize = 26, SKTypeface customFont = null, bool isBold = false, bool wrap = false)
         {
             var textElementEnumerator = StringInfo.GetTextElementEnumerator(text);
             float currentX = startPoint.X;
             float currentY = startPoint.Y + fontSize;
-            float lineGap = fontSize / 2;
-            float lineHeight = fontSize + lineGap;
+            float lineHeight = fontSize + 3;
 
             SKTypeface GetTypeface(SKTypeface baseFont, bool bold)
             {
@@ -240,11 +239,28 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
 
                 var shapedText = shaper.Shape(textElement, paint);
 
-                if (currentX + shapedText.Width > area.Right)
+                if (wrap)
                 {
-                    MainCanvas.DrawShapedText("...", currentX, currentY, paint);
-                    break;
+                    if (currentX + shapedText.Width > area.Right)
+                    {
+                        currentX = area.Left;
+                        currentY += lineHeight;
+                    }
+                    if (area.Bottom != 0 && currentY > area.Bottom)
+                    {
+                        currentY -= lineHeight;
+                        break;
+                    }
                 }
+                else
+                {
+                    if (currentX + shapedText.Width > area.Right)
+                    {
+                        MainCanvas.DrawShapedText("...", currentX, currentY, paint);
+                        break;
+                    }
+                }
+
                 MainCanvas.DrawShapedText(textElement, currentX, currentY, paint);
                 currentX += shapedText.Width;
             }

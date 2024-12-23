@@ -186,7 +186,7 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
             AppConfig.NoticeGroups.Clear();
             foreach (var item in GroupTreeNodes)
             {
-                var node = new MonitorItem
+                var node = new MonitorConfigItem
                 {
                     GroupId = item.GroupId,
                     TargetId = []

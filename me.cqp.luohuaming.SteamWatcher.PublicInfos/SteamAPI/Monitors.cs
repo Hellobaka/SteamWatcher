@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Timers;
+using static me.cqp.luohuaming.SteamWatcher.PublicInfos.MonitorNoticeItem;
 
 namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
 {
@@ -24,9 +26,9 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
         private bool FirstFetch { get; set; } = true;
 
         /// <summary>
-        /// steamId, (appId, name)
+        /// steamId, MonitorItem
         /// </summary>
-        public static Dictionary<string, (string, string)> Playing { get; set; } = [];
+        public static Dictionary<string, MonitorItem> Playing { get; set; } = [];
 
         public void StartCheckTimer()
         {
@@ -70,12 +72,14 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                 }
                 foreach (var item in summary.players)
                 {
-                    if (Playing.TryGetValue(item.steamid, out var playing) && string.IsNullOrEmpty(item.gameid) && item.gameid != playing.Item1)
+                    if (Playing.TryGetValue(item.steamid, out var playing)
+                        && string.IsNullOrEmpty(item.gameid)
+                        && item.gameid != playing.AppId)
                     {
                         // not playing
                         notices.Add(new MonitorNoticeItem
                         {
-                            GameName = playing.Item2,
+                            GameName = playing.GameName,
                             NoticeType = NoticeType.NotPlayed,
                             SteamID = item.steamid,
                             PlayerName = item.personaname,
@@ -86,10 +90,14 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                     }
                     if (Playing.TryGetValue(item.steamid, out playing))
                     {
-                        if (playing.Item1 != item.steamid)
+                        if (playing.AppId != item.gameid)
                         {
                             // playing changed
-                            Playing[item.steamid] = (item.steamid, item.gameextrainfo);
+                            playing.AppId = item.gameid;
+                            playing.GameName = item.gameextrainfo;
+                            playing.StartTime = DateTime.Now;
+                            playing.Achievements = await FetchPlayerAchievementList(item.steamid, item.gameid);
+
                             notices.Add(new MonitorNoticeItem
                             {
                                 GameName = item.gameextrainfo,
@@ -98,7 +106,37 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                                 PlayerName = item.personaname,
                                 AvatarUrl = item.avatarfull
                             });
-                            continue;
+                        }
+                        if (AppConfig.EnableAchievementNotice)
+                        {
+                            var achievements = await FetchPlayerAchievementList(item.steamid, item.gameid);
+                            if (achievements != null)
+                            {
+                                foreach (var achievement in achievements)
+                                {
+                                    // get achievement
+                                    if (playing.Achievements.Any(x => x.apiname != achievement.apiname))
+                                    {
+                                        var achievementDetail = await GetAppAchievements.Get(item.gameid, achievement.apiname);
+                                        if (achievementDetail != null)
+                                        {
+                                            var notice = new MonitorNoticeItem
+                                            {
+                                                GameName = achievementDetail.description,
+                                                NoticeType = NoticeType.GetAchievement,
+                                                AppID = item.gameid,
+                                                SteamID = achievementDetail.name,
+                                                PlayerName = achievementDetail.displayName,
+                                                AvatarUrl = achievementDetail.icon
+                                            };
+                                            var percent = await GetGlobalAchievementStat.Get(item.gameid, achievement.apiname);
+                                            notice.Extra = percent > 0 ? $"全球解锁率：{percent:f1}%" : "";
+                                            notices.Add(notice);
+                                        }
+                                    }
+                                }
+                            }
+                            playing.Achievements = achievements;
                         }
                     }
                     else
@@ -114,7 +152,14 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                             {
                                 continue;
                             }
-                            Playing.Add(item.steamid, (item.steamid, item.gameextrainfo));
+                            Playing.Add(item.steamid, new MonitorItem
+                            {
+                                AppId = item.gameid,
+                                GameName = item.gameextrainfo,
+                                StartTime = DateTime.Now,
+                                SteamId = item.steamid,
+                                Achievements = await FetchPlayerAchievementList(item.steamid, item.gameid),
+                            });
                             notices.Add(new MonitorNoticeItem
                             {
                                 GameName = item.gameextrainfo,
@@ -152,6 +197,31 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             finally
             {
                 ElapsedHandling = false;
+            }
+        }
+
+        private async Task<GetPlayerAchievement.Achievement[]> FetchPlayerAchievementList(string steamid, string gameid)
+        {
+            try
+            {
+                if (!AppConfig.EnableAchievementNotice)
+                {
+                    return [];
+                }
+                var achievements = await GetPlayerAchievement.Get(steamid, gameid);
+                if (achievements != null)
+                {
+                    return achievements.playerstats.achievements;
+                }
+                else
+                {
+                    return [];
+                }
+            }
+            catch (Exception ex)
+            {
+                MainSave.CQLog?.Error("获取成就列表", ex.Message + ex.StackTrace);
+                return [];
             }
         }
     }
