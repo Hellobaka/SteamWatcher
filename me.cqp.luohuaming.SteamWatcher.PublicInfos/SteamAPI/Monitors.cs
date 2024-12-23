@@ -116,7 +116,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                                 foreach (var achievement in achievements)
                                 {
                                     // get achievement
-                                    if (playing.Achievements.Any(x => x.apiname != achievement.apiname))
+                                    if (!playing.Achievements.Any(x => x.apiname == achievement.apiname))
                                     {
                                         var achievementDetail = await GetAppAchievements.Get(item.gameid, achievement.apiname);
                                         if (achievementDetail != null)
@@ -180,7 +180,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                     FirstFetch = false;
                     return;
                 }
-                foreach (var item in notices.Where(x => x.NoticeType == NoticeType.Playing))
+                foreach (var item in notices.Where(x => x.NoticeType == NoticeType.Playing || x.NoticeType == NoticeType.GetAchievement))
                 {
                     if (item.DownloadAvatar())
                     {

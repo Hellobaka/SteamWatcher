@@ -90,11 +90,16 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
             }
             string baseDirectory = NoticeType switch
             {
-                NoticeType.GetAchievement => Path.Combine(MainSave.ImageDirectory, "SteamWatcher", AppID, "Achievement"),
+                NoticeType.GetAchievement => Path.Combine(MainSave.ImageDirectory, "SteamWatcher", "Achievement", AppID),
                 _ => Path.Combine(MainSave.ImageDirectory, "SteamWatcher", "Avatar")
             };
+            string fileName = NoticeType switch
+            {
+                NoticeType.GetAchievement => $"{AchievementID}.png",
+                _ => $"{SteamID}.png"
+            };
             Directory.CreateDirectory(baseDirectory);
-            var t = CommonHelper.DownloadFile(AvatarUrl, $"{SteamID}.png", baseDirectory, true);
+            var t = CommonHelper.DownloadFile(AvatarUrl, fileName, baseDirectory, true);
             return t;
         }
 
@@ -102,7 +107,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
         {
             return NoticeType switch
             {
-                NoticeType.GetAchievement => Path.Combine(MainSave.ImageDirectory, "SteamWatcher", "Achievement", AppID, $"{SteamID}.png"),
+                NoticeType.GetAchievement => Path.Combine(MainSave.ImageDirectory, "SteamWatcher", "Achievement", AppID, $"{AchievementID}.png"),
                 _ => Path.Combine(MainSave.ImageDirectory, "SteamWatcher", "Avatar", $"{SteamID}.png")
             };
         }

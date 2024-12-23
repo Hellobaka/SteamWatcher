@@ -9,7 +9,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
 {
     public class GetAppAchievements
     {
-        public const string BaseUrl = "https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key={{Key}}&appid={{AppID}}&l={{Language}}";
+        public const string BaseUrl = "https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key={0}&appid={1}&l={2}";
 
         private static Dictionary<string, GetAppAchievements> Caches { get; set; } = [];
 
@@ -43,7 +43,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             }
             catch (Exception ex)
             {
-                MainSave.CQLog.Error("GetAppAchievements", ex.Message + ex.StackTrace);
+                MainSave.CQLog?.Error("GetAppAchievements", ex.Message + ex.StackTrace);
                 return null;
             }
         }
