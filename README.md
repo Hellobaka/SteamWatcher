@@ -8,6 +8,12 @@ Bot is Watching you.👁️
 > [!WARNING] 
 > 若APIKey与欲查询的用户为同一个账号时，设置游戏私密功能将无效
 
+> [!NOTE] 
+> 新成就大约4分钟后才能被Bot发现
+
+> [!NOTE] 
+> 修改刷新间隔配置后需要重载插件
+
 ## 依赖文件
 - [libHarfBuzzSharp.dll](https://github.com/Hellobaka/BilibiliUpdateCheckBot/releases/download/2.0.0/libHarfBuzzSharp.dll)
 - [libSkiaSharp.dll](https://github.com/Hellobaka/BilibiliUpdateCheckBot/releases/download/2.0.0/libSkiaSharp.dll)
