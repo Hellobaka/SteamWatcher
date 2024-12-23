@@ -41,7 +41,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             }
             catch (Exception ex)
             {
-                MainSave.CQLog.Error("GetPlayerSummary", ex.Message + ex.StackTrace);
+                MainSave.CQLog?.Error("GetPlayerSummary", ex.Message + ex.StackTrace);
                 return null;
             }
         }
