@@ -95,6 +95,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SteamAPI\GetAppInfo.cs" />
     <Compile Include="SteamAPI\GetFriendList.cs" />
+    <Compile Include="SteamAPI\GetAppAchievements.cs" />
+    <Compile Include="SteamAPI\GetGlobalAchievementStat.cs" />
+    <Compile Include="SteamAPI\GetPlayerAchievement.cs" />
     <Compile Include="SteamAPI\GetPlayerSummary.cs" />
     <Compile Include="SteamAPI\Monitors.cs" />
     <Compile Include="SteamAPI\Painting.cs" />

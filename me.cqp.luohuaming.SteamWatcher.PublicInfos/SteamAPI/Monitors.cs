@@ -83,7 +83,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                             NoticeType = NoticeType.NotPlayed,
                             SteamID = item.steamid,
                             PlayerName = item.personaname,
-                            AvatarUrl = item.avatarfull
+                            AvatarUrl = item.avatarfull,
+                            Extra = AppConfig.EnableSessionDurationNotice ? $"，游玩时间 {(DateTime.Now - playing.StartTime).TotalMinutes:f1} 分钟" : ""
                         });
                         Playing.Remove(item.steamid);
                         continue;
@@ -122,12 +123,13 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                                         {
                                             var notice = new MonitorNoticeItem
                                             {
-                                                GameName = achievementDetail.description,
+                                                AchievementDescription = achievementDetail.description,
                                                 NoticeType = NoticeType.GetAchievement,
                                                 AppID = item.gameid,
-                                                SteamID = achievementDetail.name,
-                                                PlayerName = achievementDetail.displayName,
-                                                AvatarUrl = achievementDetail.icon
+                                                AchievementID = achievementDetail.name,
+                                                AchievementName = achievementDetail.displayName,
+                                                AvatarUrl = achievementDetail.icon,
+                                                PlayerName = item.personaname
                                             };
                                             var percent = await GetGlobalAchievementStat.Get(item.gameid, achievement.apiname);
                                             notice.Extra = percent > 0 ? $"全球解锁率：{percent:f1}%" : "";

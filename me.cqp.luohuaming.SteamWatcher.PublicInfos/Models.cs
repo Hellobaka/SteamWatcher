@@ -11,13 +11,18 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
     public interface IOrderModel
     {
         bool ImplementFlag { get; set; }
+
         /// <summary>
         /// 优先级，越高越优先处理
         /// </summary>
         int Priority { get; set; }
+
         string GetCommand();
+
         bool CanExecute(string destStr);
+
         FunctionResult Execute(CQGroupMessageEventArgs e);
+
         FunctionResult Execute(CQPrivateMessageEventArgs e);
     }
 
@@ -57,6 +62,12 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
         public string ImagePath { get; set; }
 
+        public string AchievementName { get; set; }
+
+        public string AchievementDescription { get; set; }
+
+        public string AchievementID { get; set; }
+
         private static byte[] BackgroundImageBuffer { get; set; }
 
         public override string ToString()
@@ -65,7 +76,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
             {
                 NoticeType.Playing => string.Format(AppConfig.ReplyPlaying, PlayerName, GameName),
                 NoticeType.PlayChanged => string.Format(AppConfig.ReplyPlayingChanged, PlayerName, GameName),
-                NoticeType.NotPlayed => string.Format(AppConfig.ReplyNotPlaying, PlayerName, GameName),
+                NoticeType.NotPlayed => string.Format(AppConfig.ReplyNotPlaying, PlayerName, GameName, Extra),
+                NoticeType.GetAchievement => string.Format(AppConfig.ReplyGetAchievement, PlayerName, AchievementName),
                 _ => ""
             };
         }
@@ -117,18 +129,18 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
             return NoticeType switch
             {
-                NoticeType.GetAchievement => DrawAchievementStat(),
+                NoticeType.GetAchievement => DrawArchivementStat(),
                 _ => DrawPlayingStat()
             };
         }
 
-        private string DrawAchievementStat()
+        private string DrawArchivementStat()
         {
             Painting painting = new(353, 87);
             painting.DrawImage(painting.LoadImageFromBuffer(BackgroundImageBuffer), new(0, 0, 353, 87));
             painting.DrawImage(painting.LoadImage(GetAvatarPath()), new SKRect() { Location = new(13, 16), Size = new(55, 55) });
-            painting.DrawText($"🏆 {PlayerName}", new() { Left = 85, Right = 330 }, new SKPoint(85, 13), SKColor.Parse("#FFFFFF"), 14);
-            painting.DrawText(string.IsNullOrEmpty(GameName) ? "已解锁成就" : GameName, new() { Left = 85, Right = 330 }, new SKPoint(85, 33), SKColor.Parse("#969696"), 14, wrap: string.IsNullOrEmpty(Extra));
+            painting.DrawText($"🏆 {AchievementName}", new() { Left = 85, Right = 330 }, new SKPoint(85, 13), SKColor.Parse("#FFFFFF"), 14);
+            painting.DrawText(string.IsNullOrEmpty(AchievementDescription) ? "已解锁成就" : AchievementDescription, new() { Left = 85, Right = 330 }, new SKPoint(85, 33), SKColor.Parse("#969696"), 14, wrap: string.IsNullOrEmpty(Extra));
             if (!string.IsNullOrEmpty(Extra))
             {
                 painting.DrawText(Extra, new() { Left = 85, Right = 330 }, new SKPoint(85, 55), SKColor.Parse("#969696"), 14);
