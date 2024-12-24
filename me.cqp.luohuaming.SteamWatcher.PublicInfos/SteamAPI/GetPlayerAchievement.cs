@@ -16,10 +16,13 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                 string url = string.Format(BaseUrl, steamId, appId, AppConfig.AppInfoLanguage, AppConfig.WebAPIKey);
                 using HttpClient client = new();
                 var result = await client.GetAsync(url);
-                result.EnsureSuccessStatusCode();
                 var json = await result.Content.ReadAsStringAsync();
 
                 var response = JsonConvert.DeserializeObject<GetPlayerAchievement>(json);
+                if (!response.playerstats.success)
+                {
+                    return null;
+                }
                 return response;
             }
             catch (Exception ex)
