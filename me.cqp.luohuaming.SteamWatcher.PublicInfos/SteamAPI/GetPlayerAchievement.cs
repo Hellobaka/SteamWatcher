@@ -19,7 +19,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                 var json = await result.Content.ReadAsStringAsync();
 
                 var response = JsonConvert.DeserializeObject<GetPlayerAchievement>(json);
-                if (!response.playerstats.success)
+                if (response == null || response.playerstats == null || !response.playerstats.success)
                 {
                     return null;
                 }
