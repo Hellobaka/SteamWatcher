@@ -93,6 +93,11 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                     {
                         if (playing.AppId != item.gameid)
                         {
+                            if (AppConfig.GameNameFilter.Any(item.gameextrainfo.Contains))
+                            {
+                                continue;
+                            }
+
                             // playing changed
                             playing.AppId = item.gameid;
                             playing.GameName = item.gameextrainfo;
