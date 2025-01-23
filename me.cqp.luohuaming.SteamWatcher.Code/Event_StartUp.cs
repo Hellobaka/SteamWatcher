@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using me.cqp.luohuaming.SteamWatcher.Sdk.Cqp;
+using System.Net;
 
 namespace me.cqp.luohuaming.SteamWatcher.Code
 {
@@ -36,6 +37,12 @@ namespace me.cqp.luohuaming.SteamWatcher.Code
                     }
                 }
             }
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3
+                | SecurityProtocolType.SystemDefault
+                | SecurityProtocolType.Tls
+                | SecurityProtocolType.Tls11
+                | SecurityProtocolType.Tls12
+                | SecurityProtocolType.Tls13;
 
             e.CQLog.Info("初始化", "加载配置");
             AppConfig appConfig = new(Path.Combine(MainSave.AppDirectory, "Config.json"));
