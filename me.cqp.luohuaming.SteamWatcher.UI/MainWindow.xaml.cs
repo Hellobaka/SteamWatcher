@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 
 namespace me.cqp.luohuaming.SteamWatcher.UI
@@ -19,11 +20,13 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
     {
         private bool _notLoading = true;
 
+        private const long SteamIDOffset = 76561197960265728;
+
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
-            //AppConfig appConfig = new AppConfig("Config.json");
+            AppConfig appConfig = new AppConfig("Config.json");
             //Monitors monitors = new();
             //monitors.PlayingChanged += Monitors_PlayingChanged;
             //monitors.StartCheckTimer();
@@ -83,6 +86,7 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
                 {
                     Name = item.Name,
                     SteamID = item.SteamID,
+                    NickName = item.NickName
                 });
             }
             foreach (var item in FriendLists)
@@ -106,6 +110,10 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
                 return;
             }
             NotLoading = false;
+            if (ConfigSteamID.Text.Length != 17 && long.TryParse(ConfigSteamID.Text, out long friendCode))
+            {
+                ConfigSteamID.Text = (friendCode + SteamIDOffset).ToString();
+            }
 
             var summaries = await GetPlayerSummary.Get([ConfigSteamID.Text]);
             if (summaries == null)
@@ -123,17 +131,18 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
                 {
                     name += $" {info.gameextrainfo}";
                 }
+                ConfigLists.Add(new()
+                {
+                    Checked = false,
+                    Name = name,
+                    SteamID = info.steamid,
+                    NickName = info.personaname
+                });
             }
             else
             {
-                name = $"[{info.steamid}] [拉取失败]";
+                ShowError("拉取项目时出现错误，获取到的 SteamID 无效");
             }
-            ConfigLists.Add(new()
-            {
-                Checked = false,
-                Name = name,
-                SteamID = info.steamid,
-            });
 
             OnPropertyChanged(nameof(ConfigLists));
             NotLoading = true;
@@ -148,6 +157,10 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
                 return;
             }
             NotLoading = false;
+            if (FriendSteamID.Text.Length != 17 && long.TryParse(FriendSteamID.Text, out long friendCode))
+            {
+                FriendSteamID.Text = (friendCode + SteamIDOffset).ToString();
+            }
             var list = await GetFriendList.Get(FriendSteamID.Text);
             if (list == null)
             {
@@ -183,6 +196,7 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
                     Checked = false,
                     Name = name,
                     SteamID = item.steamid,
+                    NickName = info?.personaname
                 });
             }
 
@@ -275,6 +289,7 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
                     Checked = false,
                     Name = name,
                     SteamID = item.steamid,
+                    NickName = item.personaname
                 });
             }
             OnPropertyChanged(nameof(ConfigLists));
@@ -294,6 +309,52 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
             var form = new ParamSetting();
             form.ShowDialog();
             form.Close();
+        }
+
+        private void CopyNick_Click(object sender, RoutedEventArgs e)
+        {
+            var item = (sender as MenuItem).DataContext as FriendListItem;
+            if (item is not null)
+            {
+                Clipboard.SetText(item.NickName);
+            }
+            else
+            {
+                ShowError("选中项无效");
+            }
+        }
+
+        private void CopySteamID_Click(object sender, RoutedEventArgs e)
+        {
+            var item = (sender as MenuItem).DataContext as FriendListItem;
+            if (item is not null)
+            {
+                Clipboard.SetText(item.SteamID);
+            }
+            else
+            {
+                ShowError("选中项无效");
+            }
+        }
+
+        private void CopyFriendCode_Click(object sender, RoutedEventArgs e)
+        {
+            var item = (sender as MenuItem).DataContext as FriendListItem;
+            if (item is not null)
+            {
+                if (long.TryParse(item.SteamID, out long steamID))
+                {
+                    Clipboard.SetText((steamID - SteamIDOffset).ToString());
+                }
+                else
+                {
+                    ShowError("SteamID无效");
+                }
+            }
+            else
+            {
+                ShowError("选中项无效");
+            }
         }
     }
 }

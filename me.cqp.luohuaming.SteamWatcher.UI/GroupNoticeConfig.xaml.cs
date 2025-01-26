@@ -63,7 +63,7 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
             var selectItem = ConfigList.SelectedItem as FriendListItem;
             if (GroupTree.SelectedItem is MonitorItemWarpper item)
             {
-                if (item.TargetId.Any(x=>x.SteamId == selectItem.SteamID))
+                if (item.TargetId.Any(x => x.SteamId == selectItem.SteamID))
                 {
                     MainWindow.ShowInfo("项目重复");
                     return;
@@ -72,10 +72,11 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
                 {
                     SteamId = selectItem.SteamID,
                     Name = selectItem.Name,
-                    Parent = item
+                    Parent = item,
+                    NickName = selectItem.NickName
                 });
             }
-            else if(GroupTree.SelectedItem is MonitorItemWarpper.Child child)
+            else if (GroupTree.SelectedItem is MonitorItemWarpper.Child child)
             {
                 var parent = child.Parent;
                 if (parent.TargetId.Any(x => x.SteamId == selectItem.SteamID))
@@ -87,7 +88,8 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
                 {
                     SteamId = selectItem.SteamID,
                     Name = selectItem.Name,
-                    Parent = parent
+                    Parent = parent,
+                    NickName = selectItem.NickName
                 });
             }
             OnPropertyChanged(nameof(GroupTreeNodes));
@@ -162,7 +164,7 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
                         Name = GroupLists.FirstOrDefault(x => x.GroupID == item.GroupId)?.Name ?? item.GroupId.ToString(),
                         TargetId = []
                     };
-                    foreach(var steamId in item.TargetId)
+                    foreach (var steamId in item.TargetId)
                     {
                         var configItem = ConfigLists.FirstOrDefault(x => x.SteamID == steamId);
                         i.TargetId.Add(new MonitorItemWarpper.Child
@@ -170,6 +172,7 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
                             Parent = i,
                             SteamId = steamId,
                             Name = configItem?.Name ?? steamId,
+                            NickName = configItem.NickName
                         });
                     }
                     GroupTreeNodes.Add(i);

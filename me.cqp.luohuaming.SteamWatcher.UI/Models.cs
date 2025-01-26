@@ -26,6 +26,7 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
 
         public string SteamID { get; set; }
 
+        public string NickName { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -55,6 +56,8 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
             public string SteamId { get; set; }
 
             public string Name { get; set; }
+
+            public string NickName { get; set; }
 
             public MonitorItemWarpper Parent { get; set; }
         }
