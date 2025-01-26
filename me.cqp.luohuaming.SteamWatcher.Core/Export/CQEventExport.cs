@@ -64,7 +64,7 @@ namespace me.cqp.luohuaming.SteamWatcher.App.Export
 			// 反射获取 AppData 实例	
 			Type appDataType = typeof (AppData);	
 			// 注册一个 CQApi 实例	
-			AppInfo appInfo = new AppInfo ("me.cqp.luohuaming.SteamWatcher", 1, 9, "Steam视奸机", "1.2.3", 1, "落花茗", "玩啥呢 不叫我", authCode);	
+			AppInfo appInfo = new AppInfo ("me.cqp.luohuaming.SteamWatcher", 1, 9, "Steam视奸机", "1.3.0", 1, "落花茗", "玩啥呢 不叫我", authCode);	
 			appDataType.GetRuntimeProperty ("CQApi").GetSetMethod (true).Invoke (null, new object[] { new CQApi (appInfo) });	
 			AppData.UnityContainer.RegisterInstance<CQApi> ("me.cqp.luohuaming.SteamWatcher", AppData.CQApi);	
 			// 向容器注册一个 CQLog 实例	
