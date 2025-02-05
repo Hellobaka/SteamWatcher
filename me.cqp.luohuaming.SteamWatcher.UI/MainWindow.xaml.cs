@@ -4,6 +4,7 @@ using me.cqp.luohuaming.SteamWatcher.Sdk.Cqp;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -40,9 +41,20 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
             foreach (var notice in notices)
             {
                 sb.AppendLine(notice.ToString());
-                if (!string.IsNullOrEmpty(notice.ImagePath))
+                if (AppConfig.EnableDraw && (notice.NoticeType == NoticeType.Playing || notice.NoticeType == NoticeType.GetAchievement))
                 {
-                    sb.AppendLine(CQApi.CQCode_Image(notice.ImagePath).ToSendString());
+                    if (notice.DownloadAvatar())
+                    {
+                        string filePath = notice.Draw();
+                        if (File.Exists(Path.Combine("data", "image", filePath)))
+                        {
+                            sb.AppendLine(CQApi.CQCode_Image(filePath).ToSendString());
+                        }
+                    }
+                    else
+                    {
+                        MainSave.CQLog.Warning("下载头像", $"下载 {notice.PlayerName}[{notice.SteamID}] 用户头像时失败");
+                    }
                 }
             }
             sb.RemoveNewLine();

@@ -31,6 +31,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
         public static List<MonitorConfigItem> NoticeGroups { get; set; } = [];
 
+        public static List<NickNameItem> NickNames { get; set; } = [];
+
         public static int QueryInterval { get; set; } = 60;
 
         public static int NoticeInterval { get; set; } = 10;
@@ -57,6 +59,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
             MonitorPlayers = GetConfig("MonitorPlayers", new List<string>());
             GameNameFilter = GetConfig("GameNameFilter", new List<string>());
             NoticeGroups = GetConfig("NoticeGroups", new List<MonitorConfigItem>());
+            NickNames = GetConfig("NickNames", new List<NickNameItem>());
             QueryInterval = GetConfig("QueryInterval", 60);
             NoticeInterval = GetConfig("NoticeInterval", 10);
             EnableDraw = GetConfig("EnableDraw", true);

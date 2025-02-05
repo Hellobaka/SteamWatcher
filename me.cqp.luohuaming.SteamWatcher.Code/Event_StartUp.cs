@@ -65,10 +65,30 @@ namespace me.cqp.luohuaming.SteamWatcher.Code
                 StringBuilder sb = new();
                 foreach (var notice in notices.Where(x => item.TargetId.Any(o => o == x.SteamID)))
                 {
-                    sb.AppendLine(notice.ToString());
-                    if (!string.IsNullOrEmpty(notice.ImagePath))
+                    // 处理昵称
+                    var nickName = AppConfig.NickNames.FirstOrDefault(x => x.SteamID == notice.SteamID);
+                    var groupNick = nickName?.Groups.FirstOrDefault(x => x.GroupID == item.GroupId);
+                    if (groupNick != null)
                     {
-                        sb.AppendLine(CQApi.CQCode_Image(notice.ImagePath).ToSendString());
+                        notice.PlayerName = groupNick.NickName;
+                    }
+
+                    sb.AppendLine(notice.ToString());
+                    // 绘制，筛选开始玩与获得成就
+                    if (AppConfig.EnableDraw && (notice.NoticeType == NoticeType.Playing || notice.NoticeType == NoticeType.GetAchievement))
+                    {
+                        if (notice.DownloadAvatar())
+                        {
+                            string filePath = notice.Draw();
+                            if (File.Exists(Path.Combine("data", "image", filePath)))
+                            {
+                                sb.AppendLine(CQApi.CQCode_Image(filePath).ToSendString());
+                            }
+                        }
+                        else
+                        {
+                            MainSave.CQLog.Warning("下载头像", $"下载 {notice.PlayerName}[{notice.SteamID}] 用户头像时失败");
+                        }
                     }
                 }
                 sb.RemoveNewLine();

@@ -187,13 +187,6 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                     FirstFetch = false;
                     return;
                 }
-                foreach (var item in notices.Where(x => x.NoticeType == NoticeType.Playing || x.NoticeType == NoticeType.GetAchievement))
-                {
-                    if (item.DownloadAvatar())
-                    {
-                        item.ImagePath = item.Draw();
-                    }
-                }
                 if (notices.Count > 0)
                 {
                     PlayingChanged?.Invoke(notices);

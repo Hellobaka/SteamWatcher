@@ -33,6 +33,20 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
         public List<string> TargetId { get; set; }
     }
 
+    public class NickNameItem
+    {
+        public string SteamID { get; set; }
+
+        public List<NickNameGroupItem> Groups { get; set; } = [];
+    }
+
+    public class NickNameGroupItem
+    {
+        public long GroupID { get; set; }
+
+        public string NickName { get; set; }
+    }
+
     public enum NoticeType
     {
         Playing,
@@ -59,8 +73,6 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
         public NoticeType NoticeType { get; set; }
 
         public string AvatarUrl { get; set; }
-
-        public string ImagePath { get; set; }
 
         public string AchievementName { get; set; }
 
