@@ -80,7 +80,7 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
                         {
                             Parent = i,
                             GroupID = nickname.GroupID,
-                            Name = $"{nickname.GroupID}[{groupItem?.Name}]: {nickname.NickName}",
+                            Name = $"{groupItem?.Name}: {nickname.NickName}",
                             NickName = nickname.NickName
                         });
                     }
