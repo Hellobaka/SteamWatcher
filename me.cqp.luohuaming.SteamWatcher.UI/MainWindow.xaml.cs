@@ -8,9 +8,9 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 
 namespace me.cqp.luohuaming.SteamWatcher.UI
 {
@@ -53,7 +53,7 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
                     }
                     else
                     {
-                        MainSave.CQLog.Warning("下载头像", $"下载 {notice.PlayerName}[{notice.SteamID}] 用户头像时失败");
+                        MainSave.CQLog?.Warning("下载头像", $"下载 {notice.PlayerName}[{notice.SteamID}] 用户头像时失败");
                     }
                 }
             }
@@ -273,7 +273,7 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
                 NotLoading = true;
                 return;
             }
-
+            ConfigLists = [];
             var summaries = await GetPlayerSummary.Get(AppConfig.MonitorPlayers);
             if (summaries == null)
             {
@@ -366,6 +366,22 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
             else
             {
                 ShowError("选中项无效");
+            }
+        }
+
+        private void NickConfig_Click(object sender, RoutedEventArgs e)
+        {
+            var form = new NickNameConfig();
+            form.ConfigLists = ConfigLists;
+            form.ShowDialog();
+            form.Close();
+        }
+
+        private void RefreshList_Click(object sender, RoutedEventArgs e)
+        {
+            if (ShowConfirm("刷新列表前请确保已保存更改，是否继续？"))
+            {
+                Dispatcher.BeginInvoke(() => Window_Loaded(sender, e));
             }
         }
     }
