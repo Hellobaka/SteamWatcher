@@ -64,7 +64,11 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
         public string AppID { get; set; }
 
+        public string NickName { get; set; }
+
         public string PlayerName { get; set; }
+
+        public string DisplayName => string.IsNullOrEmpty(NickName) ? PlayerName : NickName;
 
         public string GameName { get; set; }
 
@@ -86,10 +90,10 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
         {
             return NoticeType switch
             {
-                NoticeType.Playing => string.Format(AppConfig.ReplyPlaying, PlayerName, GameName),
-                NoticeType.PlayChanged => string.Format(AppConfig.ReplyPlayingChanged, PlayerName, GameName),
-                NoticeType.NotPlayed => string.Format(AppConfig.ReplyNotPlaying, PlayerName, GameName, Extra),
-                NoticeType.GetAchievement => string.Format(AppConfig.ReplyGetAchievement, PlayerName, AchievementName),
+                NoticeType.Playing => string.Format(AppConfig.ReplyPlaying, DisplayName, GameName),
+                NoticeType.PlayChanged => string.Format(AppConfig.ReplyPlayingChanged, DisplayName, GameName),
+                NoticeType.NotPlayed => string.Format(AppConfig.ReplyNotPlaying, DisplayName, GameName, Extra),
+                NoticeType.GetAchievement => string.Format(AppConfig.ReplyGetAchievement, DisplayName, AchievementName),
                 _ => ""
             };
         }
@@ -173,7 +177,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
             painting.DrawImage(painting.LoadImageFromBuffer(BackgroundImageBuffer), new(0, 0, 353, 87));
             painting.DrawImage(painting.LoadImage(GetAvatarPath()), new SKRect() { Location = new(13, 16), Size = new(55, 55) });
             painting.DrawRectangle(new() { Location = new(68, 16), Size = new(3, 55) }, SKColor.Parse("#59bf40"), SKColors.Black, 0);
-            painting.DrawText(PlayerName, Painting.Anywhere, new SKPoint(85, 13), SKColor.Parse("#d8f4ba"), 14);
+            painting.DrawText(DisplayName, Painting.Anywhere, new SKPoint(85, 13), SKColor.Parse("#d8f4ba"), 14);
             painting.DrawText("正在玩", Painting.Anywhere, new SKPoint(85, 33), SKColor.Parse("#969696"), 14);
             painting.DrawText(GameName, new() { Left = 85, Right = 330 }, new SKPoint(85, 55), SKColor.Parse("#91c257"), 14);
 

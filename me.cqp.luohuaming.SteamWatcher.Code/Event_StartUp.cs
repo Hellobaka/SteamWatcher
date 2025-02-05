@@ -66,11 +66,12 @@ namespace me.cqp.luohuaming.SteamWatcher.Code
                 foreach (var notice in notices.Where(x => item.TargetId.Any(o => o == x.SteamID)))
                 {
                     // 处理昵称
+                    notice.NickName = "";
                     var nickName = AppConfig.NickNames.FirstOrDefault(x => x.SteamID == notice.SteamID);
                     var groupNick = nickName?.Groups.FirstOrDefault(x => x.GroupID == item.GroupId);
                     if (groupNick != null)
                     {
-                        notice.PlayerName = groupNick.NickName;
+                        notice.NickName = groupNick.NickName;
                     }
 
                     sb.AppendLine(notice.ToString());
