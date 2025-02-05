@@ -94,6 +94,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="NickNameConfig.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ParamSetting.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -101,6 +105,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models.cs" />
+    <Compile Include="NickNameConfig.xaml.cs">
+      <DependentUpon>NickNameConfig.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ParamSetting.xaml.cs">
       <DependentUpon>ParamSetting.xaml</DependentUpon>
     </Compile>

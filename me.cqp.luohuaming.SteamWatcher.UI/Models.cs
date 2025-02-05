@@ -69,4 +69,40 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
+
+    public class NickNameItemWarpper : INotifyPropertyChanged
+    {
+        public string SteamID { get; set; }
+
+        public string Name { get; set; }
+
+        public ObservableCollection<Child> Groups { get; set; }
+
+        public class Child : INotifyPropertyChanged
+        {
+            private string name;
+
+            public long GroupID { get; set; }
+
+            public string Name { get => name; set { name = value; OnPropertyChanged(nameof(Name)); } }
+
+            public string NickName { get; set; }
+
+            public NickNameItemWarpper Parent { get; set; }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
 }
