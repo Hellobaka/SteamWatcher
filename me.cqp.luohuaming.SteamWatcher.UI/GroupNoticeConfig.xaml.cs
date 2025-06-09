@@ -172,7 +172,7 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
                             Parent = i,
                             SteamId = steamId,
                             Name = configItem?.Name ?? steamId,
-                            NickName = configItem.NickName
+                            NickName = configItem?.NickName
                         });
                     }
                     GroupTreeNodes.Add(i);
