@@ -90,6 +90,8 @@
     <Compile Include="ConfigBase.cs" />
     <Compile Include="AppConfig.cs" />
     <Compile Include="FunctionResult.cs" />
+    <Compile Include="GameGridImage\GridItem.cs" />
+    <Compile Include="GameGridImage\GridLayout.cs" />
     <Compile Include="MainSave.cs" />
     <Compile Include="Models.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -97,8 +99,10 @@
     <Compile Include="SteamAPI\GetFriendList.cs" />
     <Compile Include="SteamAPI\GetAppAchievements.cs" />
     <Compile Include="SteamAPI\GetGlobalAchievementStat.cs" />
+    <Compile Include="SteamAPI\GetOwnedGames.cs" />
     <Compile Include="SteamAPI\GetPlayerAchievement.cs" />
     <Compile Include="SteamAPI\GetPlayerSummary.cs" />
+    <Compile Include="SteamAPI\GetTopAchievementsForGames.cs" />
     <Compile Include="SteamAPI\Monitors.cs" />
     <Compile Include="SteamAPI\Painting.cs" />
   </ItemGroup>
@@ -117,6 +121,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\SkiaSharp.NativeAssets.Win32.2.88.9\build\net462\SkiaSharp.NativeAssets.Win32.targets" Condition="Exists('..\packages\SkiaSharp.NativeAssets.Win32.2.88.9\build\net462\SkiaSharp.NativeAssets.Win32.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
