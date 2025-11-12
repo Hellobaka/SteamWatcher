@@ -23,7 +23,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
 
         public float Width { get; set; }
 
-        public string SizeType { get; set; } = "Small";
+        public int SizeLevel { get; set; } = 1;
 
         public float Height { get; set; }
 

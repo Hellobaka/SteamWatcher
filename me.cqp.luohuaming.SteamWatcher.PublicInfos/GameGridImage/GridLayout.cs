@@ -11,7 +11,9 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
     {
         public int CanvasWidth { get; }
 
-        public int BaseTile { get; }
+        public int BaseWidth { get; }
+
+        public int BaseHeight { get; }
 
         public int Gap { get; }
 
@@ -19,7 +21,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
 
         public GetPlayerSummary.Player Player { get; set; }
 
-        public GridLayout(GetPlayerSummary.Player player, List<GridItem> games, int canvasWidth = 4000, int baseTile = 260, int gap = 6)
+        public GridLayout(GetPlayerSummary.Player player, List<GridItem> games, int canvasWidth = 1600, int baseWidth = 600, int baseHeight = 900, int gap = 6)
         {
             if (Player == null)
             {
@@ -32,7 +34,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
             Player = player;
             Games = [];
             CanvasWidth = canvasWidth;
-            BaseTile = baseTile;
+            BaseWidth = baseWidth;
+            BaseHeight = baseHeight;
             Gap = gap;
         }
 
@@ -52,7 +55,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
 
             foreach (var game in Games)
             {
-                var (w, h) = GetTileSize(game.SizeType);
+                var (w, h) = GetImageSize(game.SizeLevel);
 
                 // 换行检查
                 if (x + w + Gap > CanvasWidth)
@@ -88,30 +91,13 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
             for (int i = 0; i < n; i++)
             {
                 double rank = (double)i / n;
-                if (rank < 0.1)
-                {
-                    Games[i].SizeType = "Large";
-                }
-                else if (rank < 0.5)
-                {
-                    Games[i].SizeType = "Medium";
-                }
-                else
-                {
-                    Games[i].SizeType = "Small";
-                }
+                Games[i].SizeLevel = (int)Math.Ceiling(rank * 10);
             }
         }
 
-        private (float w, float h) GetTileSize(string type)
+        private (float w, float h) GetImageSize(int sizeLevel)
         {
-            return type switch
-            {
-                "Large" => (BaseTile * 2f, BaseTile * 2f),
-                "Medium" => (BaseTile * 1f, BaseTile * 1f),
-                "Small" => (BaseTile * 1f, BaseTile * 0.75f),
-                _ => (BaseTile, BaseTile)
-            };
+            return (BaseWidth * (1.0f / sizeLevel), BaseHeight * (1.0f / sizeLevel));
         }
     }
 }
