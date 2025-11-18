@@ -92,6 +92,7 @@
     <Compile Include="FunctionResult.cs" />
     <Compile Include="GameGridImage\GridItem.cs" />
     <Compile Include="GameGridImage\GridLayout.cs" />
+    <Compile Include="GameGridImage\SizeLevelGenerators.cs" />
     <Compile Include="MainSave.cs" />
     <Compile Include="Models.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

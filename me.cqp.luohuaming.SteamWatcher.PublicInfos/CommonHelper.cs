@@ -34,22 +34,23 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
         /// <param name="path">目标文件夹</param>
         /// <param name="overwrite">重复时是否覆写</param>
         /// <returns></returns>
-        public static bool DownloadFile(string url, string fileName, string path, bool overwrite = false)
+        public static bool DownloadFile(string url, string path, bool overwrite = false)
         {
             using var http = new HttpClient();
             try
             {
                 if (string.IsNullOrWhiteSpace(url)) return false;
-                if (!overwrite && File.Exists(Path.Combine(path, fileName))) return true;
+                if (!overwrite && File.Exists(path)) return true;
                 var r = http.GetAsync(url);
                 byte[] buffer = r.Result.Content.ReadAsByteArrayAsync().Result;
-                Directory.CreateDirectory(path);
-                File.WriteAllBytes(Path.Combine(path, fileName), buffer);
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                File.WriteAllBytes(path, buffer);
                 return true;
             }
             catch (Exception e)
             {
-                MainSave.CQLog.Warning("下载头像", e);
+                Console.WriteLine(e);
+                MainSave.CQLog?.Warning("下载文件", e);
                 return false;
             }
         }

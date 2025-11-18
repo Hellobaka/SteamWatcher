@@ -365,6 +365,42 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             return SKImage.FromBitmap(scaledBitmap);
         }
 
+        public void DrawRainbowGradientBorder(float strokeWidth)
+        {
+            SKColor[] colors =
+            [
+                SKColors.Red,
+                SKColors.Orange,
+                SKColors.Yellow,
+                SKColors.Green,
+                SKColors.Blue,
+                SKColors.Indigo,
+                SKColors.Violet
+            ];
+            DrawGradientBorder(colors, strokeWidth);
+        }
+
+        public void DrawGradientBorder(SKColor[] colors, float strokeWidth)
+        {
+            using var paint = new SKPaint
+            {
+                IsAntialias = true,
+                Style = SKPaintStyle.Stroke,
+                StrokeWidth = strokeWidth,
+                Shader = SKShader.CreateLinearGradient(
+                    new SKPoint(0, 0),
+                    new SKPoint(Width, Height),
+                    colors,
+                    null,
+                    SKShaderTileMode.Clamp)
+            };
+            MainCanvas.DrawRect(new SKRect
+            {
+                Location = new(),
+                Size = new(Width, Height)
+            }, paint);
+        }
+
         public void Save(string path)
         {
             using var image = MainSurface.Snapshot();

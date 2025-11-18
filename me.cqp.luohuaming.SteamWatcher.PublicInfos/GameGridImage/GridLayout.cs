@@ -1,4 +1,5 @@
 ﻿using me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,21 +10,27 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
 {
     public class GridLayout
     {
-        public int CanvasWidth { get; }
+        private int CanvasWidth { get; }
 
-        public int BaseWidth { get; }
+        private float BaseWidth { get; }
 
-        public int BaseHeight { get; }
+        private float BaseHeight { get; }
 
-        public int Gap { get; }
+        private int Gap { get; }
 
-        public List<GridItem> Games { get; set; } = [];
+        private List<GridItem> LayoutGames { get; set; } = [];
 
-        public GetPlayerSummary.Player Player { get; set; }
+        private List<GridItem> Games { get; set; } = [];
 
-        public GridLayout(GetPlayerSummary.Player player, List<GridItem> games, int canvasWidth = 1600, int baseWidth = 600, int baseHeight = 900, int gap = 6)
+        private GetPlayerSummary.Player Player { get; set; }
+
+        private float MinWidth { get; set; }
+
+        private float MinHeight { get; set; }
+
+        public GridLayout(GetPlayerSummary.Player player, List<GridItem> games, int canvasWidth = 1600, int gap = 5)
         {
-            if (Player == null)
+            if (player == null)
             {
                 throw new ArgumentNullException("玩家信息不可为空");
             }
@@ -32,14 +39,19 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
                 throw new ArgumentNullException("游戏列表不可为空");
             }
             Player = player;
-            Games = [];
+            Games = games;
             CanvasWidth = canvasWidth;
-            BaseWidth = baseWidth;
-            BaseHeight = baseHeight;
+            BaseWidth = AppConfig.GameGridVerticalImage ? 600 : 460;
+            BaseHeight = AppConfig.GameGridVerticalImage ? 900 : 215;
             Gap = gap;
+
+            MinWidth = (BaseWidth / AppConfig.GameGridMaxSizeLevel) + Gap * 2;
+            MinHeight = (BaseHeight / AppConfig.GameGridMaxSizeLevel) + Gap * 2;
+
+            CalculateLayout();
         }
 
-        public void CalculateLayout()
+        private void CalculateLayout()
         {
             if (Games == null || Games.Count == 0)
             {
@@ -49,35 +61,79 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
             Games = Games.OrderByDescending(g => g.PlaytimeHours).ToList();
             AssignSizeTypes();
 
-            // 贪心布局
-            float x = Gap, y = Gap;
-            float currentRowHeight = 0;
-
             foreach (var game in Games)
             {
-                var (w, h) = GetImageSize(game.SizeLevel);
-
-                // 换行检查
-                if (x + w + Gap > CanvasWidth)
-                {
-                    // 换行
-                    x = Gap;
-                    y += currentRowHeight + Gap;
-                    currentRowHeight = 0;
-                }
-                game.X = x;
-                game.Y = y;
-                game.Width = w;
-                game.Height = h;
-                x += w + Gap;
-                currentRowHeight = Math.Max(currentRowHeight, h);
+                FindImagePosition(game);
             }
+        }
+
+        private void FindImagePosition(GridItem game)
+        {
+            var (w, h) = GetImageSize(game.SizeLevel);
+            game.Width = w; game.Height = h;
+
+            bool found = false;
+            float x = 0, y = 0;
+            while (!found)
+            {
+                SKPoint currentPoint = new(x, y);
+
+                bool collision = false;
+                foreach (var other in LayoutGames)
+                {
+                    if (CheckCollision(currentPoint, game, other))
+                    {
+                        collision = true;
+                        break;
+                    }
+                }
+
+                if (!collision)
+                {
+                    game.X = currentPoint.X;
+                    game.Y = currentPoint.Y;
+                    LayoutGames.Add(game);
+                    found = true;
+                }
+                else
+                {
+                    x += MinWidth + Gap * 2;
+                    if (x + w > CanvasWidth)
+                    {
+                        x = 0;
+                        y += MinHeight + Gap * 2;
+                    }
+                }
+            }
+        }
+
+        private bool CheckCollision(SKPoint currentPoint, GridItem game, GridItem other)
+        {
+            return !(currentPoint.X + game.Width < other.X ||
+                     currentPoint.X > other.X + other.Width ||
+                     currentPoint.Y + game.Height < other.Y ||
+                     currentPoint.Y > other.Y + other.Height);
         }
 
         public string Draw()
         {
             using Painting painting = new(CanvasWidth, (int)(Games.Max(g => g.Y + g.Height) + Gap));
-            // 于此处实现详细绘制，注意控制内存
+            painting.Clear(SKColors.Black);
+            Parallel.ForEach(Games, new ParallelOptions
+            {
+                MaxDegreeOfParallelism = 24
+            }, (game) =>
+            {
+                game.DownloadGamePicture();
+                game.Draw();
+                painting.DrawImage(game.Image, new SKRect()
+                {
+                    Location = new SKPoint(game.X + Gap, game.Y + Gap),
+                    Size = new SKSize(game.Width, game.Height)
+                });
+                game.Image.Dispose();
+            });
+
             string baseDirectory = Path.Combine(MainSave.ImageDirectory, "SteamWatcher", "GameGrid");
             string fileName = $"{Player.steamid}.png";
             painting.Save(Path.Combine(baseDirectory, fileName));
@@ -87,17 +143,17 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
 
         private void AssignSizeTypes()
         {
-            int n = Games.Count;
-            for (int i = 0; i < n; i++)
+            var arr = Games.Select(x => x.PlaytimeHours).ToList();
+            var levels = SizeLevelGenerators.ComputeLogQuantileLevels(arr, AppConfig.GameGridMaxSizeLevel);
+            for (int i = 0; i < arr.Count; i++)
             {
-                double rank = (double)i / n;
-                Games[i].SizeLevel = (int)Math.Ceiling(rank * 10);
+                Games[i].SizeLevel = levels[i];
             }
         }
 
         private (float w, float h) GetImageSize(int sizeLevel)
         {
-            return (BaseWidth * (1.0f / sizeLevel), BaseHeight * (1.0f / sizeLevel));
+            return (BaseWidth * (sizeLevel / (float)AppConfig.GameGridMaxSizeLevel) - Gap * 2, BaseHeight * (sizeLevel / (float)AppConfig.GameGridMaxSizeLevel) - Gap * 2);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
 {
     public class GetOwnedGames
     {
-        public const string BaseUrl = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key={0}&steamid={1}&include_appinfo=true&skip_unvetted_apps=true&language={2}&include_extended_appinfo=true";
+        public const string BaseUrl = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key={0}&steamid={1}&include_appinfo=true&skip_unvetted_apps=false&language={2}&include_extended_appinfo=true&include_played_free_games=true";
 
         public static async Task<GetOwnedGames> Get(string steamId)
         {
@@ -22,12 +22,12 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             }
             catch (Exception ex)
             {
-                MainSave.CQLog.Error("GetOwnedGames", ex.Message + ex.StackTrace);
+                MainSave.CQLog?.Error("GetOwnedGames", ex.Message + ex.StackTrace);
                 return null;
             }
         }
 
-        public static string ConvertGamePicture(int appId) => $"https://cdn.cloudflare.steamstatic.com/steam/apps/{appId}/library_600x900.jpg";
+        public static string GetGamePictureUrl(int appId, bool isVertical) => $"https://cdn.cloudflare.steamstatic.com/steam/apps/{appId}/{(isVertical ? "library_600x900" : "header")}.jpg";
 
         [JsonProperty("response")]
         public Response Result { get; set; }

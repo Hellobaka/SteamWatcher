@@ -33,6 +33,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
         public static List<NickNameItem> NickNames { get; set; } = [];
 
+        public static List<QQSteamBinding> SteamBinding { get; set; } = [];
+
         public static int QueryInterval { get; set; } = 60;
 
         public static int NoticeInterval { get; set; } = 10;
@@ -49,6 +51,12 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
         public static List<string> GameNameFilter { get; set; } = [];
 
+        public static int GameGridFilterGameTime { get; set; } = 10;
+
+        public static int GameGridMaxSizeLevel { get; set; } = 8;
+
+        public static bool GameGridVerticalImage { get; set; } = true;
+
         public override void LoadConfig()
         {
             WebAPIKey = GetConfig("WebAPIKey", "");
@@ -60,6 +68,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
             GameNameFilter = GetConfig("GameNameFilter", new List<string>());
             NoticeGroups = GetConfig("NoticeGroups", new List<MonitorConfigItem>());
             NickNames = GetConfig("NickNames", new List<NickNameItem>());
+            SteamBinding = GetConfig("SteamBinding", new List<QQSteamBinding>());
             QueryInterval = GetConfig("QueryInterval", 60);
             NoticeInterval = GetConfig("NoticeInterval", 10);
             EnableDraw = GetConfig("EnableDraw", true);
@@ -69,6 +78,9 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
             CustomFont = GetConfig("CustomFont", "微软雅黑");
             CustomFontPath = GetConfig("CustomFontPath", "");
             AppInfoLanguage = GetConfig("AppInfoLanguage", "schinese");
+            GameGridMaxSizeLevel = GetConfig("GameGridMaxSizeLevel", 8);
+            GameGridFilterGameTime = GetConfig("GameGridFilterGameTime", 10);
+            GameGridVerticalImage = GetConfig("GameGridVerticalImage", true);
         }
     }
 }

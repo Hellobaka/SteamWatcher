@@ -18,7 +18,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             {
                 List<Game> allGames = [];
                 int batchSize = 50;
-                for (int i = 0; i < Math.Ceiling(appIds.Length / batchSize * 1.0); i++)
+                for (int i = 0; i < Math.Ceiling(appIds.Length / (float)batchSize); i++)
                 {
                     int index = 0;
                     string appIdsParam = string.Join("&", appIds.Skip(i * batchSize).Take(batchSize).Select(id => $"appids[{index++}]={id}"));

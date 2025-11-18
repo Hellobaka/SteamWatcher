@@ -47,6 +47,13 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
         public string NickName { get; set; }
     }
 
+    public class QQSteamBinding
+    {
+        public long SteamId { get; set; }
+
+        public long QQ { get; set; }
+    }
+
     public enum NoticeType
     {
         Playing,
@@ -115,7 +122,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
                 _ => $"{SteamID}.png"
             };
             Directory.CreateDirectory(baseDirectory);
-            var t = CommonHelper.DownloadFile(AvatarUrl, fileName, baseDirectory, true);
+            var t = CommonHelper.DownloadFile(AvatarUrl, Path.Combine(baseDirectory, fileName), true);
             return t;
         }
 
