@@ -27,7 +27,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             }
         }
 
-        public static string GetGamePictureUrl_CDN2(int appId, string fileName, bool isVertical) => $"https://cdn.cloudflare.steamstatic.com/steam/apps/{appId}/{(isVertical ? fileName : "header.jpg")}";
+        public static string GetGamePictureUrl_CDN2(int appId, string fileName, bool isVertical) => $"https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/{appId}/{(isVertical ? fileName : "header.jpg")}";
 
         public static string GetGamePictureUrl(int appId, string fileName, bool isVertical) => $"https://steamcdn-a.akamaihd.net/steam/apps/{appId}/{(isVertical ? fileName : "header.jpg")}";
 

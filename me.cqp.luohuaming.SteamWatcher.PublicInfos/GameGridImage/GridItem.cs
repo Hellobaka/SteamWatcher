@@ -53,6 +53,10 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
             var t = CommonHelper.DownloadFile(ImageUrl, path, canOverwrite);
             if (!t)
             {
+                t = CommonHelper.DownloadFile(ImageUrlBackup, path, canOverwrite);
+            }
+            if (!t)
+            {
                 MainSave.CQLog?.Warning("下载游戏封面", $"{Name} 游戏封面下载失败");
                 return;
             }
