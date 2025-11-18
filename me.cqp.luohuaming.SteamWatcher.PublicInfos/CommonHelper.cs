@@ -37,11 +37,13 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
         public static bool DownloadFile(string url, string path, bool overwrite = false)
         {
             using var http = new HttpClient();
+            http.Timeout = TimeSpan.FromSeconds(10);
             try
             {
                 if (string.IsNullOrWhiteSpace(url)) return false;
                 if (!overwrite && File.Exists(path)) return true;
                 var r = http.GetAsync(url);
+                r.Result.EnsureSuccessStatusCode();
                 byte[] buffer = r.Result.Content.ReadAsByteArrayAsync().Result;
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 File.WriteAllBytes(path, buffer);

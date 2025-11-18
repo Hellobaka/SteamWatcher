@@ -16,8 +16,6 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
 
         private float BaseHeight { get; }
 
-        private int Gap { get; }
-
         private List<GridItem> LayoutGames { get; set; } = [];
 
         private List<GridItem> Games { get; set; } = [];
@@ -28,7 +26,9 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
 
         private float MinHeight { get; set; }
 
-        public GridLayout(GetPlayerSummary.Player player, List<GridItem> games, int canvasWidth = 1600, int gap = 5)
+        private int Gap { get; set; } = 5;
+
+        public GridLayout(GetPlayerSummary.Player player, List<GridItem> games)
         {
             if (player == null)
             {
@@ -40,13 +40,12 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
             }
             Player = player;
             Games = games;
-            CanvasWidth = canvasWidth;
             BaseWidth = AppConfig.GameGridVerticalImage ? 600 : 460;
             BaseHeight = AppConfig.GameGridVerticalImage ? 900 : 215;
-            Gap = gap;
+            CanvasWidth = (int)(BaseWidth * 2.5);
 
-            MinWidth = (BaseWidth / AppConfig.GameGridMaxSizeLevel) + Gap * 2;
-            MinHeight = (BaseHeight / AppConfig.GameGridMaxSizeLevel) + Gap * 2;
+            MinWidth = (BaseWidth / AppConfig.GameGridMaxSizeLevel);
+            MinHeight = (BaseHeight / AppConfig.GameGridMaxSizeLevel);
 
             CalculateLayout();
         }
@@ -97,11 +96,11 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
                 }
                 else
                 {
-                    x += MinWidth + Gap * 2;
+                    x += MinWidth;
                     if (x + w > CanvasWidth)
                     {
                         x = 0;
-                        y += MinHeight + Gap * 2;
+                        y += MinHeight;
                     }
                 }
             }
@@ -109,15 +108,16 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
 
         private bool CheckCollision(SKPoint currentPoint, GridItem game, GridItem other)
         {
-            return !(currentPoint.X + game.Width < other.X ||
-                     currentPoint.X > other.X + other.Width ||
-                     currentPoint.Y + game.Height < other.Y ||
-                     currentPoint.Y > other.Y + other.Height);
+            if (currentPoint.X + game.Width <= other.X) return false; // 左
+            if (currentPoint.X >= other.X + other.Width) return false; // 右
+            if (currentPoint.Y + game.Height <= other.Y) return false; // 上
+            if (currentPoint.Y >= other.Y + other.Height) return false; // 下
+            return true;
         }
 
         public string Draw()
         {
-            using Painting painting = new(CanvasWidth, (int)(Games.Max(g => g.Y + g.Height) + Gap));
+            using Painting painting = new(CanvasWidth, (int)(Games.Max(g => g.Y + g.Height)));
             painting.Clear(SKColors.Black);
             Parallel.ForEach(Games, new ParallelOptions
             {
@@ -128,7 +128,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
                 game.Draw();
                 painting.DrawImage(game.Image, new SKRect()
                 {
-                    Location = new SKPoint(game.X + Gap, game.Y + Gap),
+                    Location = new SKPoint(game.X, game.Y),
                     Size = new SKSize(game.Width, game.Height)
                 });
                 game.Image.Dispose();
@@ -153,7 +153,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
 
         private (float w, float h) GetImageSize(int sizeLevel)
         {
-            return (BaseWidth * (sizeLevel / (float)AppConfig.GameGridMaxSizeLevel) - Gap * 2, BaseHeight * (sizeLevel / (float)AppConfig.GameGridMaxSizeLevel) - Gap * 2);
+            return (BaseWidth * (sizeLevel / (float)AppConfig.GameGridMaxSizeLevel), BaseHeight * (sizeLevel / (float)AppConfig.GameGridMaxSizeLevel));
         }
     }
 }

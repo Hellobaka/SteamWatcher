@@ -18,7 +18,7 @@ namespace Tester
             MainSave.ImageDirectory = "";
             AppConfig appConfig = new("Config.json");
             appConfig.LoadConfig();
-            string steamId = "76561198235850272";
+            string steamId = "76561198895471080";
 
             GetPlayerSummary.PlayerSummary summary;
             GetOwnedGames.Response games;

@@ -17,6 +17,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
 
         public string ImageUrl { get; set; } = "";
 
+        public string ImageUrlBackup { get; set; } = "";
+
         public bool AllAchievements { get; set; }
 
         public float X { get; set; }
@@ -48,7 +50,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
                 var fileInfo = new FileInfo(path);
                 canOverwrite = fileInfo.Length < 1024 ||(DateTime.Now - fileInfo.CreationTime).TotalDays > 7;
             }
-            var t = CommonHelper.DownloadFile(GetOwnedGames.GetGamePictureUrl(AppId, AppConfig.GameGridVerticalImage), path, canOverwrite);
+            var t = CommonHelper.DownloadFile(ImageUrl, path, canOverwrite);
             if (!t)
             {
                 MainSave.CQLog?.Warning("下载游戏封面", $"{Name} 游戏封面下载失败");
@@ -81,16 +83,28 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
             }
             if (AllAchievements)
             {
-                painting.DrawText("🏆", Painting.Anywhere, new SKPoint(painting.Width - 140, 30), SKColor.Parse("#FFFFFF"), 96);
-                painting.DrawRainbowGradientBorder(25);
+                if (AppConfig.GameGridVerticalImage)
+                {
+                    painting.DrawText("🏆", Painting.Anywhere, new SKPoint(painting.Width - 140, 30), SKColor.Parse("#FFFFFF"), 96);
+                    painting.DrawRainbowGradientBorder(25);
+                }
+                else
+                {
+                    painting.DrawText("🏆", Painting.Anywhere, new SKPoint(painting.Width - 100, 10), SKColor.Parse("#FFFFFF"), 64);
+                    painting.DrawRainbowGradientBorder(15);
+                }
             }
             Image = painting.SnapShot();
         }
 
-        private static void DrawDefault(Painting painting)
+        private void DrawDefault(Painting painting)
         {
             painting.Clear(SKColor.Parse("#141A21"));
-            painting.DrawText("?", Painting.Anywhere, new SKPoint(painting.Width / 2 - 49, painting.Height / 2 - 98), SKColor.Parse("#FFFFFF"), 196);
+            painting.DrawText(Name, new SKRect
+            {
+                Location = new(),
+                Size = new(painting.Width, painting.Height)
+            }, new SKPoint(0, painting.Height / 4), SKColors.White, 96, wrap: true);
         }
 
         public static List<GridItem> Parse(GetOwnedGames.Game[] games, GetTopAchievementsForGames.Game[] achievements)
@@ -100,7 +114,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
                 AppId = game.appid,
                 Name = game.name,
                 PlaytimeHours = game.playtime_forever,
-                ImageUrl = GetOwnedGames.GetGamePictureUrl(game.appid, AppConfig.GameGridVerticalImage),
+                ImageUrl = GetOwnedGames.GetGamePictureUrl(game.appid, game.capsule_filename, AppConfig.GameGridVerticalImage),
+                ImageUrlBackup = GetOwnedGames.GetGamePictureUrl_CDN2(game.appid, game.capsule_filename, AppConfig.GameGridVerticalImage),
                 AllAchievements = game.has_community_visible_stats
                         && achievements.FirstOrDefault(a => a.appid == game.appid) is GetTopAchievementsForGames.Game ga
                         && ga.total_achievements > 0
