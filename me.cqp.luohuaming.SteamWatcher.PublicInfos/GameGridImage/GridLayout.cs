@@ -136,7 +136,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
 
             string baseDirectory = Path.Combine(MainSave.ImageDirectory, "SteamWatcher", "GameGrid");
             string fileName = $"{Player.steamid}.png";
-            painting.Save(Path.Combine(baseDirectory, fileName));
+            string path = Path.Combine(baseDirectory, fileName);
+            painting.Save(path);
 
             return Path.Combine("SteamWatcher", "GameGrid", fileName);
         }

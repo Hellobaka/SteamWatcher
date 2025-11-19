@@ -511,8 +511,54 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
         public void Save(string path)
         {
             using var image = MainSurface.Snapshot();
-            using var data = image.Encode();
+            using var rawData = image.Encode();
+            var raw = rawData.ToArray();
+            if (raw.LongLength >= 8 * 1024 * 1024)
+            {
+                SaveCompressed(path, 80);
+                return;
+            }
+            else
+            {
+                File.WriteAllBytes(path, raw);
+            }
+        }
 
+        /// <summary>
+        /// 保存图片并进行压缩
+        /// </summary>
+        /// <param name="path">保存路径</param>
+        /// <param name="quality">JPEG质量(0-100)，默认80</param>
+        /// <param name="maxWidth">最大宽度，0表示不限制</param>
+        /// <param name="maxHeight">最大高度，0表示不限制</param>
+        public void SaveCompressed(string path, int quality = 80, int maxWidth = 0, int maxHeight = 0)
+        {
+            using var image = MainSurface.Snapshot();
+
+            SKImage processedImage = image;
+            if (maxWidth > 0 && maxHeight > 0 && (image.Width > maxWidth || image.Height > maxHeight))
+            {
+                // 计算保持宽高比的缩放尺寸
+                float scale = Math.Min((float)maxWidth / image.Width, (float)maxHeight / image.Height);
+                int newWidth = (int)(image.Width * scale);
+                int newHeight = (int)(image.Height * scale);
+
+                processedImage = ResizeImage(image, newWidth, newHeight);
+            }
+
+            // 使用JPEG格式压缩，质量参数控制压缩率
+            using var data = processedImage.Encode(SKEncodedImageFormat.Jpeg, Math.Max(Math.Min(quality, 100), 1));
+            File.WriteAllBytes(path, data.ToArray());
+        }
+
+        /// <summary>
+        /// 保存为PNG格式（无损压缩）
+        /// </summary>
+        /// <param name="path">保存路径</param>
+        public void SaveAsPng(string path)
+        {
+            using var image = MainSurface.Snapshot();
+            using var data = image.Encode(SKEncodedImageFormat.Png, 100);
             File.WriteAllBytes(path, data.ToArray());
         }
 
