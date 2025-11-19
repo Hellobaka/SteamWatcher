@@ -144,6 +144,64 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             MainCanvas.DrawImage(image, rect, AntialiasPaint);
         }
 
+        /// <summary>
+        /// 在指定位置绘制圆角图片
+        /// </summary>
+        /// <param name="image">欲绘制的图片</param>
+        /// <param name="rect">目标位置、大小</param>
+        /// <param name="radius">圆角半径</param>
+        /// <param name="borderWidth">边框宽度，0表示无边框</param>
+        /// <param name="borderColor">边框颜色</param>
+        public void DrawRoundedImage(SKImage image, SKRect rect, float radius, float borderWidth = 0, SKColor? borderColor = null)
+        {
+            // 创建圆角路径
+            using var path = new SKPath();
+            path.AddRoundRect(rect, radius, radius);
+
+            // 保存画布状态
+            MainCanvas.Save();
+
+            // 应用圆角裁剪
+            MainCanvas.ClipPath(path, SKClipOperation.Intersect, true);
+
+            // 绘制图片
+            MainCanvas.DrawImage(image, rect, AntialiasPaint);
+
+            // 恢复画布状态
+            MainCanvas.Restore();
+
+            // 绘制边框
+            if (borderWidth > 0 && borderColor.HasValue)
+            {
+                using var borderPaint = new SKPaint
+                {
+                    Color = borderColor.Value,
+                    IsAntialias = true,
+                    Style = SKPaintStyle.Stroke,
+                    StrokeWidth = borderWidth
+                };
+                MainCanvas.DrawRoundRect(rect, radius, radius, borderPaint);
+            }
+        }
+
+        /// <summary>
+        /// 在指定位置绘制圆角图片
+        /// </summary>
+        /// <param name="imagePath">欲绘制图片的文件路径</param>
+        /// <param name="rect">目标位置、大小</param>
+        /// <param name="radius">圆角半径</param>
+        /// <param name="borderWidth">边框宽度，0表示无边框</param>
+        /// <param name="borderColor">边框颜色</param>
+        public void DrawRoundedImage(string imagePath, SKRect rect, float radius, float borderWidth = 0, SKColor? borderColor = null)
+        {
+            if (!File.Exists(imagePath))
+            {
+                return;
+            }
+            using var image = LoadImage(imagePath);
+            DrawRoundedImage(image, rect, radius, borderWidth, borderColor);
+        }
+
         public void DrawRectangle(SKRect rect, SKColor fillColor, SKColor strokeColor, float strokeWidth)
         {
             using var paint = new SKPaint

@@ -117,8 +117,25 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
 
         public string Draw()
         {
-            using Painting painting = new(CanvasWidth, (int)(Games.Max(g => g.Y + g.Height)));
+            using Painting gameGrid = new(CanvasWidth, (int)(Games.Max(g => g.Y + g.Height)));
+            using Painting painting = new(CanvasWidth, (int)(gameGrid.Height + 240));// 160 + 80
+            gameGrid.Clear(SKColors.Black);
             painting.Clear(SKColors.Black);
+            string avatarPath = Path.Combine(MainSave.ImageDirectory, "SteamWatcher", "Avatars", $"{Player.steamid}.png");
+            if (CommonHelper.DownloadFile(Player.avatarfull, avatarPath))
+            {
+                // 头像 (20, 20) 130x130
+                painting.DrawRoundedImage(avatarPath, new SKRect(20, 20, 150, 150), 10);
+                // 昵称 (180, 55)
+                painting.DrawText($"{Player.personaname} [{long.Parse(Player.steamid) - 76561197960265728}]", new SKRect(180, 20, painting.Width - 20, 150), new SKPoint(120, 55), SKColors.White, 48, isBold: true);
+                // 游戏总数和总时长 (一半宽度起, 55)
+                string gameStat = $"拥有游戏数量: {Games.Count} 总游戏时长: {(int)Games.Sum(g => g.PlaytimeHours)} 小时";
+                painting.DrawText(gameStat, new SKRect(painting.Width / 2, 20, painting.Width - 20, 150), new SKPoint(0, 55), SKColors.White, 48, isBold: true, align: Painting.TextAlign.Right);
+            }
+            else
+            {
+                MainSave.CQLog?.Warning("头像下载", "头像下载失败，跳过绘制");
+            }
             Parallel.ForEach(Games, new ParallelOptions
             {
                 MaxDegreeOfParallelism = 24
@@ -126,14 +143,22 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
             {
                 game.DownloadGamePicture();
                 game.Draw();
-                painting.DrawImage(game.Image, new SKRect()
+                gameGrid.DrawImage(game.Image, new SKRect()
                 {
                     Location = new SKPoint(game.X + Gap, game.Y + Gap),
                     Size = new SKSize(game.Width - Gap * 2, game.Height - Gap * 2)
                 });
                 game.Image.Dispose();
             });
-
+            var gameGridImage = gameGrid.SnapShot();
+            gameGrid.Dispose();
+            painting.DrawImage(gameGridImage, new SKRect(0, 160, gameGrid.Width, gameGrid.Height + 160));
+            painting.DrawText("Powered By @噗噗个噗Bot", new SKRect
+            {
+                Location = new(0, painting.Height - 80),
+                Size = new(painting.Width, 80)
+            }, new SKPoint(0, painting.Height - 70), SKColors.White, 48, isBold: false, align: Painting.TextAlign.Center);
+           
             string baseDirectory = Path.Combine(MainSave.ImageDirectory, "SteamWatcher", "GameGrid");
             string fileName = $"{Player.steamid}.png";
             string path = Path.Combine(baseDirectory, fileName);
