@@ -380,6 +380,13 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
             form.Close();
         }
 
+        private void SteamBindingButton_Click(object sender, RoutedEventArgs e)
+        {
+            var form = new SteamBindingConfig();
+            form.ShowDialog();
+            form.Close();
+        }
+
         private void RefreshList_Click(object sender, RoutedEventArgs e)
         {
             if (ShowConfirm("刷新列表前请确保已保存更改，是否继续？"))
