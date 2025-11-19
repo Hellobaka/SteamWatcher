@@ -1,9 +1,11 @@
 ﻿using SkiaSharp;
 using SkiaSharp.HarfBuzz;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
 {
@@ -34,6 +36,13 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
         }
 
         public static SKRect Anywhere { get; set; } = new SKRect { Right = int.MaxValue, Bottom = int.MaxValue };
+
+        public enum TextAlign
+        {
+            Left,
+            Center,
+            Right
+        }
 
         public float Height { get; set; }
 
@@ -163,9 +172,19 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
         /// <summary>
         /// 相对区域坐标绘制
         /// </summary>
-        public SKPoint DrawRelativeText(string text, SKRect area, SKPoint startPoint, SKColor color, float fontSize = 26, SKTypeface customFont = null, bool isBold = false)
+        /// <param name="text">欲绘制的文本</param>
+        /// <param name="area">可绘制的区域</param>
+        /// <param name="startPoint">起始相对坐标</param>
+        /// <param name="color">文本颜色</param>
+        /// <param name="customFont">自定义字体</param>
+        /// <param name="fontSize">字体大小</param>
+        /// <param name="isBold">是否粗体</param>
+        /// <param name="wrap">是否自动换行</param>
+        /// <param name="align">文本对齐方式</param>
+        /// <returns>最后一个字符的右下角坐标</returns>
+        public SKPoint DrawRelativeText(string text, SKRect area, SKPoint startPoint, SKColor color, float fontSize = 26, SKTypeface customFont = null, bool isBold = false, bool wrap = false, TextAlign align = TextAlign.Left)
         {
-            return DrawText(text, area, new SKPoint { X = startPoint.X + area.Left, Y = startPoint.Y + area.Top }, color, fontSize, customFont, isBold);
+            return DrawText(text, area, new SKPoint { X = startPoint.X + area.Left, Y = startPoint.Y + area.Top }, color, fontSize, customFont, isBold, wrap, align);
         }
 
         /// <summary>
@@ -177,14 +196,10 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
         /// <param name="color">文本颜色</param>
         /// <param name="customFont">自定义字体</param>
         /// <param name="fontSize">字体大小</param>
+        /// <param name="align">文本对齐方式</param>
         /// <returns>最后一个字符的右下角坐标</returns>
-        public SKPoint DrawText(string text, SKRect area, SKPoint startPoint, SKColor color, float fontSize = 26, SKTypeface customFont = null, bool isBold = false, bool wrap = false)
+        public SKPoint DrawText(string text, SKRect area, SKPoint startPoint, SKColor color, float fontSize = 26, SKTypeface customFont = null, bool isBold = false, bool wrap = false, TextAlign align = TextAlign.Left)
         {
-            var textElementEnumerator = StringInfo.GetTextElementEnumerator(text);
-            float currentX = startPoint.X;
-            float currentY = startPoint.Y + fontSize;
-            float lineHeight = fontSize + 3;
-
             SKTypeface GetTypeface(SKTypeface baseFont, bool bold)
             {
                 return baseFont != null && baseFont.IsBold == bold
@@ -192,20 +207,41 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                     : SKTypeface.FromFamilyName(baseFont.FamilyName, bold ? SKFontStyle.Bold : SKFontStyle.Normal);
             }
 
+            var textElementEnumerator = StringInfo.GetTextElementEnumerator(text);
+            float currentX = startPoint.X;
+            float currentY = startPoint.Y + fontSize;
+            float lineHeight = fontSize + 3;
+
+            // 存储每行的信息用于对齐
+            List<float> lineWidths = new List<float>();
+            List<List<(string text, SKPaint paint, SKShaper shaper, float width)>> lineElements = new List<List<(string, SKPaint, SKShaper, float)>>();
+            List<(string text, SKPaint paint, SKShaper shaper, float width)> currentLineElements = new List<(string, SKPaint, SKShaper, float)>();
+            float currentLineWidth = 0;
+
             SKTypeface typeface = CustomFont != null ? GetTypeface(CustomFont, isBold) : null;
 
+            // 单次遍历处理所有文本元素
             while (textElementEnumerator.MoveNext())
             {
                 string textElement = textElementEnumerator.GetTextElement();
+
+                // 处理换行
                 if (textElement.Contains("\n"))
                 {
-                    currentX = area.Left;
-                    currentY += lineHeight;
+                    if (currentLineElements.Count > 0)
+                    {
+                        lineWidths.Add(currentLineWidth);
+                        lineElements.Add(currentLineElements);
+                        currentLineElements = new List<(string, SKPaint, SKShaper, float)>();
+                        currentLineWidth = 0;
+                    }
                     continue;
                 }
-                var enumerator = StringInfo.GetTextElementEnumerator(textElement);
-                enumerator.MoveNext();
-                int codepoint = char.ConvertToUtf32(textElement, enumerator.ElementIndex);
+
+                // 字体处理
+                var elementEnumerator = StringInfo.GetTextElementEnumerator(textElement);
+                elementEnumerator.MoveNext();
+                int codepoint = char.ConvertToUtf32(textElement, elementEnumerator.ElementIndex);
 
                 if (customFont != null && customFont.ContainsGlyph(codepoint))
                 {
@@ -220,6 +256,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                     }
                 }
 
+                // 创建绘制对象
                 var paint = new SKPaint
                 {
                     Typeface = typeface,
@@ -232,33 +269,77 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                 };
 
                 var shaper = new SKShaper(typeface);
-
                 var shapedText = shaper.Shape(textElement, paint);
 
-                if (wrap)
+                // 检查是否需要换行
+                if (wrap && currentLineWidth + shapedText.Width > area.Right - area.Left)
                 {
-                    if (currentX + shapedText.Width > area.Right)
+                    if (currentLineElements.Count > 0)
                     {
-                        currentX = area.Left;
-                        currentY += lineHeight;
-                    }
-                    if (area.Bottom != 0 && currentY > area.Bottom)
-                    {
-                        currentY -= lineHeight;
-                        break;
-                    }
-                }
-                else
-                {
-                    if (currentX + shapedText.Width > area.Right)
-                    {
-                        MainCanvas.DrawShapedText("...", currentX, currentY, paint);
-                        break;
+                        lineWidths.Add(currentLineWidth);
+                        lineElements.Add(currentLineElements);
+                        currentLineElements = new List<(string, SKPaint, SKShaper, float)>();
+                        currentLineWidth = 0;
                     }
                 }
 
-                MainCanvas.DrawShapedText(textElement, currentX, currentY, paint);
-                currentX += shapedText.Width;
+                // 添加到当前行
+                currentLineElements.Add((textElement, paint, shaper, shapedText.Width));
+                currentLineWidth += shapedText.Width;
+            }
+
+            // 添加最后一行
+            if (currentLineElements.Count > 0)
+            {
+                lineWidths.Add(currentLineWidth);
+                lineElements.Add(currentLineElements);
+            }
+
+            // 绘制文本
+            for (int lineIndex = 0; lineIndex < lineElements.Count; lineIndex++)
+            {
+                var line = lineElements[lineIndex];
+                float lineWidth = lineWidths[lineIndex];
+
+                // 计算对齐偏移
+                float alignOffset = 0;
+                if (align != TextAlign.Left)
+                {
+                    float availableWidth = area.Right - area.Left;
+                    switch (align)
+                    {
+                        case TextAlign.Center:
+                            alignOffset = (availableWidth - lineWidth) / 2;
+                            break;
+                        case TextAlign.Right:
+                            alignOffset = availableWidth - lineWidth;
+                            break;
+                    }
+                }
+
+                currentX = area.Left + alignOffset;
+
+                // 绘制当前行的所有元素
+                foreach (var (textElement, paint, shaper, width) in line)
+                {
+                    // 检查边界
+                    if (area.Bottom != 0 && currentY > area.Bottom)
+                    {
+                        break;
+                    }
+
+                    MainCanvas.DrawShapedText(textElement, currentX, currentY, paint);
+                    currentX += width;
+                }
+
+                currentX = area.Left;
+                currentY += lineHeight;
+
+                // 检查是否超出底部边界
+                if (area.Bottom != 0 && currentY > area.Bottom)
+                {
+                    break;
+                }
             }
 
             return new SKPoint(currentX, currentY);

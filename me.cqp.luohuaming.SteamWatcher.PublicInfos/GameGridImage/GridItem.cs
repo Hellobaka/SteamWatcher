@@ -110,7 +110,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
             {
                 Location = new(),
                 Size = new(painting.Width, painting.Height)
-            }, new SKPoint(0, painting.Height / 4), SKColors.White, 96, wrap: true);
+            }, new SKPoint(0, painting.Height / 4), SKColors.White, 96, wrap: true, align: Painting.TextAlign.Center);
         }
 
         public static List<GridItem> Parse(GetOwnedGames.Game[] games, GetTopAchievementsForGames.Game[] achievements)
