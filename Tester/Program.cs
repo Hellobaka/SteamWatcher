@@ -16,8 +16,48 @@ namespace Tester
         static void Main(string[] args)
         {
             MainSave.ImageDirectory = "";
+            MainSave.AppDirectory = "";
             AppConfig appConfig = new("Config.json");
             appConfig.LoadConfig();
+            //TestGameGrid();
+            TestPlayerSummary();
+        }
+
+        private static void TestPlayerSummary()
+        {
+            string steamId = "76561199028130480";
+            string appId = "2358720";
+            GetPlayerSummary.PlayerSummary summary;
+            GetAppInfo.AppInfo appInfo;
+            if (File.Exists("summary.json"))
+            {
+                summary = JsonConvert.DeserializeObject<GetPlayerSummary.PlayerSummary>(File.ReadAllText("summary.json"));
+                appInfo = JsonConvert.DeserializeObject<GetAppInfo.AppInfo>(File.ReadAllText("appInfo.json"));
+            }
+            else
+            {
+                summary = GetPlayerSummary.Get([steamId]).Result;
+                appInfo = GetAppInfo.Get(appId).Result;
+                File.WriteAllText("summary.json", JsonConvert.SerializeObject(summary, Formatting.Indented));
+                File.WriteAllText("appInfo.json", JsonConvert.SerializeObject(appInfo, Formatting.Indented));
+            }
+            var player = summary.players[0];
+            MonitorNoticeItem item = new MonitorNoticeItem()
+            {
+                GameName = appInfo.data.name,
+                PlayerName = player.personaname,
+                SteamID = player.steamid,
+                AvatarUrl = player.avatarfull,
+                AppID = appId,
+                NoticeType = NoticeType.Playing
+            };
+            item.DownloadAvatar();
+            string path = item.Draw();
+            Console.WriteLine(path);
+        }
+
+        private static void TestGameGrid()
+        {
             string steamId = "76561199028130480";
 
             GetPlayerSummary.PlayerSummary summary;

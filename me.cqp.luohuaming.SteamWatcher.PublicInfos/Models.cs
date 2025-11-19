@@ -157,12 +157,12 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
             return NoticeType switch
             {
-                NoticeType.GetAchievement => DrawArchivementStat(),
+                NoticeType.GetAchievement => DrawAchievementStat(),
                 _ => DrawPlayingStat()
             };
         }
 
-        private string DrawArchivementStat()
+        private string DrawAchievementStat()
         {
             Painting painting = new(353, 87);
             painting.DrawImage(painting.LoadImageFromBuffer(BackgroundImageBuffer), new(0, 0, 353, 87));
@@ -184,8 +184,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
             painting.DrawImage(painting.LoadImageFromBuffer(BackgroundImageBuffer), new(0, 0, 353, 87));
             painting.DrawImage(painting.LoadImage(GetAvatarPath()), new SKRect() { Location = new(13, 16), Size = new(55, 55) });
             painting.DrawRectangle(new() { Location = new(68, 16), Size = new(3, 55) }, SKColor.Parse("#59bf40"), SKColors.Black, 0);
-            painting.DrawText(DisplayName, Painting.Anywhere, new SKPoint(85, 13), SKColor.Parse("#d8f4ba"), 14);
-            painting.DrawText("正在玩", Painting.Anywhere, new SKPoint(85, 33), SKColor.Parse("#969696"), 14);
+            painting.DrawText(DisplayName, new() { Left = 85, Right = 13 }, new SKPoint(85, 13), SKColor.Parse("#d8f4ba"), 14);
+            painting.DrawText("正在玩", new() { Left = 85, Right = 33 }, new SKPoint(85, 33), SKColor.Parse("#969696"), 14);
             painting.DrawText(GameName, new() { Left = 85, Right = 330 }, new SKPoint(85, 55), SKColor.Parse("#91c257"), 14);
 
             string filePath = Path.Combine("SteamWatcher", $"{Guid.NewGuid()}.png");
