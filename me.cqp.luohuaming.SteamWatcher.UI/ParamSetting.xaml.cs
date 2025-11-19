@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -17,6 +18,10 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
             InitializeComponent();
         }
 
+        private FieldInfo[] ControlsInfo { get; set; } = [];
+
+        private PropertyInfo[] AppConfigProperties { get; set; } = [];
+
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
             var uri = e.Uri;
@@ -31,29 +36,23 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
                 AppConfig.Instance.ConfigChangeWatcher.EnableRaisingEvents = false;
                 if (VerifyInput(out string err))
                 {
-                    var properties = typeof(AppConfig).GetProperties(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
-                    foreach (UIElement item in Container.Children)
+                    foreach (var item in ControlsInfo)
                     {
-                        if (item is TextBox textBox)
+                        UIElement control = item.GetValue(this) as UIElement;
+                        if (control is TextBox textBox)
                         {
-                            var property = properties.FirstOrDefault(x => x.Name == textBox.Name);
+                            var property = AppConfigProperties.FirstOrDefault(x => x.Name == textBox.Name);
                             if (property != null && TryParse(textBox.Text, property.PropertyType, out object value))
                             {
                                 property.SetValue(null, value);
                                 AppConfig.Instance.SetConfig(textBox.Name, value);
                             }
                         }
-                        else if (item is StackPanel stackPanel)
+                        else if (control is CheckBox checkBox)
                         {
-                            foreach (UIElement child in stackPanel.Children)
-                            {
-                                if (child is CheckBox checkBox)
-                                {
-                                    var property = properties.FirstOrDefault(x => x.Name == checkBox.Name);
-                                    property?.SetValue(null, checkBox.IsChecked);
-                                    AppConfig.Instance.SetConfig(checkBox.Name, checkBox.IsChecked);
-                                }
-                            }
+                            var property = AppConfigProperties.FirstOrDefault(x => x.Name == checkBox.Name);
+                            property?.SetValue(null, checkBox.IsChecked);
+                            AppConfig.Instance.SetConfig(checkBox.Name, checkBox.IsChecked);
                         }
                     }
                     AppConfig.GameNameFilter.Clear();
@@ -99,12 +98,12 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
         private bool VerifyInput(out string err)
         {
             err = "";
-            var properties = typeof(AppConfig).GetProperties(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
-            foreach (UIElement item in Container.Children)
+            foreach (var item in ControlsInfo)
             {
-                if (item is TextBox textBox)
+                UIElement control = item.GetValue(this) as UIElement;
+                if (control is TextBox textBox)
                 {
-                    var property = properties.FirstOrDefault(x => x.Name == textBox.Name);
+                    var property = AppConfigProperties.FirstOrDefault(x => x.Name == textBox.Name);
                     if (property != null && !TryParse(textBox.Text, property.PropertyType, out _))
                     {
                         err = $"{textBox.Name} 的 {textBox.Text} 输入无法转换为有效配置";
@@ -117,31 +116,30 @@ namespace me.cqp.luohuaming.SteamWatcher.UI
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            var properties = typeof(AppConfig).GetProperties(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
-            foreach (UIElement item in Container.Children)
+            ControlsInfo = this.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
+                .Where(f => f.FieldType.IsSubclassOf(typeof(UIElement)) || f.FieldType == typeof(UIElement))
+                .ToArray();
+            AppConfigProperties = typeof(AppConfig).GetProperties(BindingFlags.Static | BindingFlags.Public);
+            foreach (var item in ControlsInfo)
             {
-                if (item is TextBox textBox)
+                UIElement control = item.GetValue(this) as UIElement;
+                if (control is TextBox textBox)
                 {
-                    var property = properties.FirstOrDefault(x => x.Name == textBox.Name);
+                    var property = AppConfigProperties.FirstOrDefault(x => x.Name == textBox.Name);
                     if (property != null)
                     {
                         textBox.Text = property.GetValue(null).ToString();
                     }
                 }
-                else if (item is StackPanel stackPanel)
+                else if (control is CheckBox checkBox)
                 {
-                    foreach (UIElement child in stackPanel.Children)
+                    var property = AppConfigProperties.FirstOrDefault(x => x.Name == checkBox.Name);
+                    if (property != null)
                     {
-                        if (child is CheckBox checkBox)
-                        {
-                            var property = properties.FirstOrDefault(x => x.Name == checkBox.Name);
-                            if (property != null)
-                            {
-                                checkBox.IsChecked = (bool)property.GetValue(null);
-                            }
-                        }
+                        checkBox.IsChecked = (bool)property.GetValue(null);
                     }
                 }
+
             }
             GameNameFilter.Items.Clear();
             foreach(var item in AppConfig.GameNameFilter)

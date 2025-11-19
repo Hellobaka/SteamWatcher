@@ -27,6 +27,12 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
         public static string CustomFontPath { get; set; } = "";
 
+        public static string SteamBindingCommand { get; set; } = "#绑定Steam";
+
+        public static string SteamUnbindingCommand { get; set; } = "#取消绑定Steam";
+
+        public static string GameGridCommand { get; set; } = "#Steam时长图";
+
         public static List<string> MonitorPlayers { get; set; } = [];
 
         public static List<MonitorConfigItem> NoticeGroups { get; set; } = [];

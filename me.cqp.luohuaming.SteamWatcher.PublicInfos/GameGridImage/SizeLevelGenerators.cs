@@ -49,6 +49,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
                 int origIndex = sorted[i].Index;
                 result[origIndex] = levelsSorted[i];
             }
+            int maxIndex = playTimes.IndexOf(playTimes.Max());
+            result[maxIndex] = levelCount + 1;
 
             return result;
         }
