@@ -51,6 +51,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
         public static List<string> GameNameFilter { get; set; } = [];
 
+        public static bool GameGridShowFreeGames { get; set; } = true;
+
         public static int GameGridFilterGameTime { get; set; } = 10;
 
         public static int GameGridMaxSizeLevel { get; set; } = 8;
@@ -81,6 +83,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
             GameGridMaxSizeLevel = GetConfig("GameGridMaxSizeLevel", 8);
             GameGridFilterGameTime = GetConfig("GameGridFilterGameTime", 10);
             GameGridVerticalImage = GetConfig("GameGridVerticalImage", true);
+            GameGridShowFreeGames = GetConfig("GameGridShowFreeGames", true);
         }
     }
 }

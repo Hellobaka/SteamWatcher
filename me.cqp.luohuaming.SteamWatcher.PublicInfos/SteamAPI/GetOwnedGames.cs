@@ -7,13 +7,13 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
 {
     public class GetOwnedGames
     {
-        public const string BaseUrl = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key={0}&steamid={1}&include_appinfo=true&skip_unvetted_apps=false&language={2}&include_extended_appinfo=true&include_played_free_games=true";
+        public const string BaseUrl = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key={0}&steamid={1}&include_appinfo=true&skip_unvetted_apps=false&language={2}&include_extended_appinfo=true&include_played_free_games={3}";
 
         public static async Task<GetOwnedGames> Get(string steamId)
         {
             try
             {
-                string url = string.Format(BaseUrl, AppConfig.WebAPIKey, steamId, AppConfig.AppInfoLanguage);
+                string url = string.Format(BaseUrl, AppConfig.WebAPIKey, steamId, AppConfig.AppInfoLanguage, AppConfig.GameGridShowFreeGames ? "true" : "false");
                 using HttpClient client = new();
                 var result = await client.GetAsync(url);
                 var json = await result.Content.ReadAsStringAsync();
