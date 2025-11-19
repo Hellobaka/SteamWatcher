@@ -42,7 +42,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
             Games = games;
             BaseWidth = AppConfig.GameGridVerticalImage ? 600 : 460;
             BaseHeight = AppConfig.GameGridVerticalImage ? 900 : 215;
-            CanvasWidth = (int)(BaseWidth * 2.5);
+            CanvasWidth = (int)(BaseWidth * 3.5);
 
             MinWidth = (BaseWidth / AppConfig.GameGridMaxSizeLevel);
             MinHeight = (BaseHeight / AppConfig.GameGridMaxSizeLevel);

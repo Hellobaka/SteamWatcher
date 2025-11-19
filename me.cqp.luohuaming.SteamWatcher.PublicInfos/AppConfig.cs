@@ -22,6 +22,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
         public static string ReplyPlayingChanged { get; set; } = "";
       
         public static string ReplyGetAchievement { get; set; } = "";
+      
+        public static string ReplyDrawGameGrid { get; set; } = "";
 
         public static string CustomFont { get; set; } = "";
 
@@ -72,6 +74,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
             ReplyPlaying = GetConfig("ReplyPlaying", "{0} 开始玩 {1} 了");
             ReplyPlayingChanged = GetConfig("ReplyPlayingChanged", "{0} 改玩 {1} 了");
             ReplyGetAchievement = GetConfig("ReplyGetAchievement", "🏆 {0} 解锁了成就 {1}");
+            ReplyDrawGameGrid = GetConfig("ReplyDrawGameGrid", "开始绘制时长图，可能耗时较长...");
             MonitorPlayers = GetConfig("MonitorPlayers", new List<string>());
             GameNameFilter = GetConfig("GameNameFilter", new List<string>());
             NoticeGroups = GetConfig("NoticeGroups", new List<MonitorConfigItem>());

@@ -63,6 +63,9 @@
     <Compile Include="Event_GroupMessage.cs" />
     <Compile Include="Event_StartUp.cs" />
     <Compile Include="OrderFunctions\ExampleFunction.cs" />
+    <Compile Include="OrderFunctions\GameGridFunction.cs" />
+    <Compile Include="OrderFunctions\SteamBindingFunction.cs" />
+    <Compile Include="OrderFunctions\SteamUnbindingFunction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
