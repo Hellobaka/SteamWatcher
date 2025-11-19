@@ -35,7 +35,7 @@ namespace me.cqp.luohuaming.SteamWatcher.Code.OrderFunctions
             var existingBinding = AppConfig.SteamBinding.FirstOrDefault(b => b.QQ == e.FromQQ);
             if (existingBinding == null)
             {
-                sendText.MsgToSend.Add("您还没有绑定Steam账号");
+                sendText.MsgToSend.Add("您还没有绑定Steam账号，请先使用 " + AppConfig.SteamBindingCommand + " 进行绑定");
                 return result;
             }
 
@@ -66,7 +66,7 @@ namespace me.cqp.luohuaming.SteamWatcher.Code.OrderFunctions
             var existingBinding = AppConfig.SteamBinding.FirstOrDefault(b => b.QQ == e.FromQQ);
             if (existingBinding == null)
             {
-                sendText.MsgToSend.Add("您还没有绑定Steam账号");
+                sendText.MsgToSend.Add("您还没有绑定Steam账号，请先使用 " + AppConfig.SteamBindingCommand + " 进行绑定");
                 return result;
             }
 

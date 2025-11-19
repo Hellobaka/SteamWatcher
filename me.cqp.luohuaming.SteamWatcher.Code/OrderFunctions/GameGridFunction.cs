@@ -38,7 +38,7 @@ namespace me.cqp.luohuaming.SteamWatcher.Code.OrderFunctions
             var binding = AppConfig.SteamBinding.FirstOrDefault(b => b.QQ == e.FromQQ);
             if (binding == null)
             {
-                sendText.MsgToSend.Add("您还没有绑定Steam账号，请先使用" + AppConfig.SteamBindingCommand + "进行绑定");
+                sendText.MsgToSend.Add("您还没有绑定Steam账号，请先使用 " + AppConfig.SteamBindingCommand + " 进行绑定");
                 return result;
             }
             e.FromGroup.SendGroupMessage(AppConfig.ReplyDrawGameGrid);
@@ -78,8 +78,6 @@ namespace me.cqp.luohuaming.SteamWatcher.Code.OrderFunctions
             var gridLayout = new GridLayout(player, gridItems);
             string imagePath = gridLayout.Draw();
             sendText.MsgToSend.Add(CQApi.CQCode_Image(imagePath).ToSendString());
-
-            result.SendObject.Add(sendText);
             return result;
         }
 
@@ -100,7 +98,7 @@ namespace me.cqp.luohuaming.SteamWatcher.Code.OrderFunctions
             var binding = AppConfig.SteamBinding.FirstOrDefault(b => b.QQ == e.FromQQ);
             if (binding == null)
             {
-                sendText.MsgToSend.Add("您还没有绑定Steam账号，请先使用" + AppConfig.SteamBindingCommand + "进行绑定");
+                sendText.MsgToSend.Add("您还没有绑定Steam账号，请先使用 " + AppConfig.SteamBindingCommand + " 进行绑定");
                 return result;
             }
             e.FromQQ.SendPrivateMessage(AppConfig.ReplyDrawGameGrid);
@@ -140,8 +138,6 @@ namespace me.cqp.luohuaming.SteamWatcher.Code.OrderFunctions
             var gridLayout = new GridLayout(player, gridItems);
             string imagePath = gridLayout.Draw();
             sendText.MsgToSend.Add(CQApi.CQCode_Image(imagePath).ToSendString());
-
-            result.SendObject.Add(sendText);
             return result;
         }
     }
