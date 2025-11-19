@@ -5,6 +5,11 @@ Bot is Watching you.👁️
 - 需要申请[Steam APIKey](https://steamcommunity.com/dev/apikey)
 - 可指定游戏名称翻译文本：修改配置中的`AppInfoLanguage`，内容可参照 [文档](https://partner.steamgames.com/doc/store/localization/languages)
 
+## 可用的指令
+- #Steam时长图
+- #绑定Steam
+- #取消绑定Steam
+
 > [!WARNING] 
 > 若APIKey与欲查询的用户为同一个账号时，设置游戏私密功能将无效
 
@@ -26,4 +31,6 @@ Bot is Watching you.👁️
 
 ![image](https://github.com/user-attachments/assets/e8fe651e-7b38-4ae3-9aaa-e13096270f98)
 ![image](https://github.com/user-attachments/assets/7c9f5eda-d2be-456c-94fc-0b4d9701381b)
+![a867c42342c166ca5ec6455da0d8fe65](https://github.com/user-attachments/assets/f1b4bbd6-7812-4852-995b-42d369fd826b)
+
 
