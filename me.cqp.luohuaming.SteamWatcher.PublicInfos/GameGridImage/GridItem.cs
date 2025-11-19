@@ -65,6 +65,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
         public void Draw()
         {
             using var painting = AppConfig.GameGridVerticalImage ? new Painting(600, 900) : new Painting(460, 215);
+            painting.Clear(SKColors.Transparent);
             string path = GetGamePicturePath();
             if (!File.Exists(path))
             {
@@ -74,6 +75,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
             {
                 try
                 {
+                    painting.RadiusBorder(30);
                     painting.DrawImage(path, new SKRect
                     {
                         Location = new(),
@@ -90,12 +92,12 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
                 if (AppConfig.GameGridVerticalImage)
                 {
                     painting.DrawText("🏆", Painting.Anywhere, new SKPoint(painting.Width - 140, 30), SKColor.Parse("#FFFFFF"), 96);
-                    painting.DrawRainbowGradientBorder(25);
+                    painting.DrawRainbowGradientBorder(15, 30);
                 }
                 else
                 {
                     painting.DrawText("🏆", Painting.Anywhere, new SKPoint(painting.Width - 100, 10), SKColor.Parse("#FFFFFF"), 64);
-                    painting.DrawRainbowGradientBorder(15);
+                    painting.DrawRainbowGradientBorder(15, 30);
                 }
             }
             Image = painting.SnapShot();
@@ -119,7 +121,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
                 Name = game.name,
                 PlaytimeHours = game.playtime_forever,
                 ImageUrl = GetOwnedGames.GetGamePictureUrl(game.appid, game.capsule_filename, AppConfig.GameGridVerticalImage),
-                ImageUrlBackup = GetOwnedGames.GetGamePictureUrl_CDN2(game.appid, game.capsule_filename, AppConfig.GameGridVerticalImage),
+                ImageUrlBackup = GetOwnedGames.GetGamePictureUrl_CDN2(game.appid, AppConfig.GameGridVerticalImage),
                 AllAchievements = game.has_community_visible_stats
                         && achievements.FirstOrDefault(a => a.appid == game.appid) is GetTopAchievementsForGames.Game ga
                         && ga.total_achievements > 0

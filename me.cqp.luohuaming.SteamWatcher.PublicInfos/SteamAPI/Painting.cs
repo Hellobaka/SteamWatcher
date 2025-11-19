@@ -28,11 +28,9 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                 return SKTypeface.FromFile(AppConfig.CustomFontPath);
             }
 
-            if (!string.IsNullOrEmpty(AppConfig.CustomFont))
-            {
-                return SKTypeface.FromFamilyName(AppConfig.CustomFont) ?? SKTypeface.Default;
-            }
-            return SKTypeface.Default;
+            return !string.IsNullOrEmpty(AppConfig.CustomFont)
+                ? SKTypeface.FromFamilyName(AppConfig.CustomFont) ?? SKTypeface.Default
+                : SKTypeface.Default;
         }
 
         public static SKRect Anywhere { get; set; } = new SKRect { Right = int.MaxValue, Bottom = int.MaxValue };
@@ -189,11 +187,9 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
 
             SKTypeface GetTypeface(SKTypeface baseFont, bool bold)
             {
-                if (baseFont != null && baseFont.IsBold == bold)
-                {
-                    return baseFont;
-                }
-                return SKTypeface.FromFamilyName(baseFont.FamilyName, bold ? SKFontStyle.Bold : SKFontStyle.Normal);
+                return baseFont != null && baseFont.IsBold == bold
+                    ? baseFont
+                    : SKTypeface.FromFamilyName(baseFont.FamilyName, bold ? SKFontStyle.Bold : SKFontStyle.Normal);
             }
 
             SKTypeface typeface = CustomFont != null ? GetTypeface(CustomFont, isBold) : null;
@@ -365,7 +361,28 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             return SKImage.FromBitmap(scaledBitmap);
         }
 
-        public void DrawRainbowGradientBorder(float strokeWidth)
+        public void RadiusBorder(float radius, float borderWidth = 0, SKColor? borderColor = null)
+        {
+            var path = new SKPath();
+            path.AddRoundRect(new SKRect(0, 0, Width, Height), radius, radius);
+
+            MainCanvas.Save();
+            MainCanvas.ClipPath(path, SKClipOperation.Intersect, true);
+
+            if (borderWidth > 0 && borderColor.HasValue)
+            {
+                using var paint = new SKPaint
+                {
+                    Color = borderColor.Value,
+                    IsAntialias = true,
+                    Style = SKPaintStyle.Stroke,
+                    StrokeWidth = borderWidth
+                };
+                MainCanvas.DrawPath(path, paint);
+            }
+        }
+
+        public void DrawRainbowGradientBorder(float strokeWidth, float radius = 0)
         {
             SKColor[] colors =
             [
@@ -377,10 +394,10 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                 SKColors.Indigo,
                 SKColors.Violet
             ];
-            DrawGradientBorder(colors, strokeWidth);
+            DrawGradientBorder(colors, strokeWidth, radius);
         }
 
-        public void DrawGradientBorder(SKColor[] colors, float strokeWidth)
+        public void DrawGradientBorder(SKColor[] colors, float strokeWidth, float radius = 0)
         {
             using var paint = new SKPaint
             {
@@ -394,11 +411,20 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
                     null,
                     SKShaderTileMode.Clamp)
             };
-            MainCanvas.DrawRect(new SKRect
+            var rect = new SKRect(
+                strokeWidth / 2,
+                strokeWidth / 2,
+                Width - (strokeWidth / 2),
+                Height - (strokeWidth / 2));
+
+            if (radius > 0)
             {
-                Location = new(),
-                Size = new(Width, Height)
-            }, paint);
+                MainCanvas.DrawRoundRect(rect, radius, radius, paint);
+            }
+            else
+            {
+                MainCanvas.DrawRect(rect, paint);
+            }
         }
 
         public void Save(string path)

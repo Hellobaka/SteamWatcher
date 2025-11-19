@@ -128,8 +128,8 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
                 game.Draw();
                 painting.DrawImage(game.Image, new SKRect()
                 {
-                    Location = new SKPoint(game.X, game.Y),
-                    Size = new SKSize(game.Width, game.Height)
+                    Location = new SKPoint(game.X + Gap, game.Y + Gap),
+                    Size = new SKSize(game.Width - Gap * 2, game.Height - Gap * 2)
                 });
                 game.Image.Dispose();
             });
