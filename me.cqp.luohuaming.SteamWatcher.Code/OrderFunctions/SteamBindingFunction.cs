@@ -41,7 +41,7 @@ namespace me.cqp.luohuaming.SteamWatcher.Code.OrderFunctions
             }
 
             // 验证SteamID格式
-            if (!IsValidSteamId(input))
+            if (!CommonHelper.IsValidSteamId(input))
             {
                 sendText.MsgToSend.Add("SteamID格式不正确，请输入17位SteamID或好友码");
                 return result;
@@ -60,7 +60,7 @@ namespace me.cqp.luohuaming.SteamWatcher.Code.OrderFunctions
             if (input.Length < 17)
             {
                 // 如果是好友码，转换为SteamID
-                steamId = ConvertFriendCodeToSteamId(input);
+                steamId = CommonHelper.ConvertFriendCodeToSteamId(input);
                 if (string.IsNullOrEmpty(steamId))
                 {
                     sendText.MsgToSend.Add("好友码转换失败，请检查输入是否正确");
@@ -114,7 +114,7 @@ namespace me.cqp.luohuaming.SteamWatcher.Code.OrderFunctions
             }
 
             // 验证SteamID格式
-            if (!IsValidSteamId(input))
+            if (!CommonHelper.IsValidSteamId(input))
             {
                 sendText.MsgToSend.Add("SteamID格式不正确，请输入17位SteamID或好友码");
                 return result;
@@ -133,7 +133,7 @@ namespace me.cqp.luohuaming.SteamWatcher.Code.OrderFunctions
             if (input.Length < 17)
             {
                 // 如果是好友码，转换为SteamID
-                steamId = ConvertFriendCodeToSteamId(input);
+                steamId = CommonHelper.ConvertFriendCodeToSteamId(input);
                 if (string.IsNullOrEmpty(steamId))
                 {
                     sendText.MsgToSend.Add("好友码转换失败，请检查输入是否正确");
@@ -163,34 +163,6 @@ namespace me.cqp.luohuaming.SteamWatcher.Code.OrderFunctions
 
             sendText.MsgToSend.Add($"绑定成功！您的Steam账号：{player.personaname}");
             return result;
-        }
-
-        private bool IsValidSteamId(string input)
-        {
-            // 17位纯数字SteamID
-            if (input.Length == 17 && long.TryParse(input, out _))
-            {
-                return true;
-            }
-
-            // 好友码（通常较短的数字）
-            if (input.Length < 17 && long.TryParse(input, out _))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        private string ConvertFriendCodeToSteamId(string friendCode)
-        {
-            // Steam好友码转换：76561197960265728 + 好友码 = SteamID
-            long baseSteamId = 76561197960265728;
-            if (long.TryParse(friendCode, out long friendCodeValue))
-            {
-                return (baseSteamId + friendCodeValue).ToString();
-            }
-            return null;
         }
     }
 }

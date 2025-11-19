@@ -56,5 +56,33 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
                 return false;
             }
         }
+
+        public static bool IsValidSteamId(string input)
+        {
+            // 17位纯数字SteamID
+            if (input.Length == 17 && long.TryParse(input, out _))
+            {
+                return true;
+            }
+
+            // 好友码（通常较短的数字）
+            if (input.Length < 17 && long.TryParse(input, out _))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public static string ConvertFriendCodeToSteamId(string friendCode)
+        {
+            // Steam好友码转换：76561197960265728 + 好友码 = SteamID
+            long baseSteamId = 76561197960265728;
+            if (long.TryParse(friendCode, out long friendCodeValue))
+            {
+                return (baseSteamId + friendCodeValue).ToString();
+            }
+            return null;
+        }
     }
 }

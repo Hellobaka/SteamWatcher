@@ -13,7 +13,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
 
         public string Name { get; set; } = "";
 
-        public double PlaytimeHours { get; set; }
+        public double PlaytimeMinutes { get; set; }
 
         public string ImageUrl { get; set; } = "";
 
@@ -119,7 +119,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
             {
                 AppId = game.appid,
                 Name = game.name,
-                PlaytimeHours = game.playtime_forever,
+                PlaytimeMinutes = game.playtime_forever,
                 ImageUrl = GetOwnedGames.GetGamePictureUrl(game.appid, game.capsule_filename, AppConfig.GameGridVerticalImage),
                 ImageUrlBackup = GetOwnedGames.GetGamePictureUrl_CDN2(game.appid, AppConfig.GameGridVerticalImage),
                 AllAchievements = game.has_community_visible_stats

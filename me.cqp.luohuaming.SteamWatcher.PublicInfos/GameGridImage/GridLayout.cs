@@ -57,7 +57,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
                 return;
             }
 
-            Games = Games.OrderByDescending(g => g.PlaytimeHours).ToList();
+            Games = Games.OrderByDescending(g => g.PlaytimeMinutes).ToList();
             AssignSizeTypes();
 
             foreach (var game in Games)
@@ -129,7 +129,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
                 // 昵称 (180, 55)
                 painting.DrawText($"{Player.personaname} [{long.Parse(Player.steamid) - 76561197960265728}]", new SKRect(180, 20, painting.Width - 20, 150), new SKPoint(120, 55), SKColors.White, 48, isBold: true);
                 // 游戏总数和总时长 (一半宽度起, 55)
-                string gameStat = $"拥有游戏数量: {Games.Count} 总游戏时长: {(int)Games.Sum(g => g.PlaytimeHours)} 小时";
+                string gameStat = $"拥有游戏数量: {Games.Count} 总游戏时长: {Games.Sum(g => g.PlaytimeMinutes) / 60.0:f1} 小时";
                 painting.DrawText(gameStat, new SKRect(painting.Width / 2, 20, painting.Width - 20, 150), new SKPoint(0, 55), SKColors.White, 48, isBold: true, align: Painting.TextAlign.Right);
             }
             else
@@ -169,7 +169,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
 
         private void AssignSizeTypes()
         {
-            var arr = Games.Select(x => x.PlaytimeHours).ToList();
+            var arr = Games.Select(x => x.PlaytimeMinutes).ToList();
             var levels = SizeLevelGenerators.ComputeLogQuantileLevels(arr, AppConfig.GameGridMaxSizeLevel);
             for (int i = 0; i < arr.Count; i++)
             {
