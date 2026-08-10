@@ -19,8 +19,8 @@ namespace Tester
             MainSave.AppDirectory = "";
             AppConfig appConfig = new("Config.json");
             appConfig.LoadConfig();
-            //TestGameGrid();
-            TestPlayerSummary();
+            TestGameGrid();
+            //TestPlayerSummary();
         }
 
         private static void TestPlayerSummary()

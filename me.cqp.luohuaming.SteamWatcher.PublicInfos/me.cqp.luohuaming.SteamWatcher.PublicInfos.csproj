@@ -11,9 +11,8 @@
   <ItemGroup>
     <PackageReference Include="Another-Mirai-Native.Abstractions" Version="1.2.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="SkiaSharp" Version="2.88.9" />
-    <PackageReference Include="SkiaSharp.HarfBuzz" Version="2.88.9" />
-    <PackageReference Include="HarfBuzzSharp" Version="7.3.0.3" />
+    <PackageReference Include="SkiaSharp" Version="3.119.4" />
+    <PackageReference Include="SkiaSharp.HarfBuzz" Version="3.119.4" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Frame.png" />

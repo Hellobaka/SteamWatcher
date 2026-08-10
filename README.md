@@ -1,4 +1,4 @@
-# Steam 视奸机（AMN2 / v2）
+# Steam 视奸机
 
 Bot is Watching you.👁️
 
@@ -30,11 +30,9 @@ Bot is Watching you.👁️
 
 1. 构建 `me.cqp.luohuaming.SteamWatcher.Plugin` 项目（Debug/Release 均可）。
 2. 将输出目录中的 `Native_me.cqp.luohuaming.SteamWatcher.Plugin.dll` 与 `Native_me.cqp.luohuaming.SteamWatcher.Plugin.json` 复制到框架的 `data\plugins` 目录。
-3. 放置原生依赖（**仅原生库不打包**，需手动放置到框架根目录 / `x86` / `libraries`，任选其一）：
+3. 放置原生依赖（需手动放置到框架根目录 / `x86` / `libraries`，任选其一）：
    - `libSkiaSharp.dll`
    - `libHarfBuzzSharp.dll`
-
-   SkiaSharp / SkiaSharp.HarfBuzz / HarfBuzzSharp 的托管程序集已由打包工具合并进 `Native_*.dll`，无需单独放置。
 4. 重载插件或重启框架。
 
 `Assets\Frame.png` 会在插件启用时自动生成到插件数据目录；若未生成，请手动放置到插件数据目录的 `Assets` 文件夹。
