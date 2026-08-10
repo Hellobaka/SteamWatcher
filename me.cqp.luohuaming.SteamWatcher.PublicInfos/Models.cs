@@ -2,32 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Threading.Tasks;
-using Another_Mirai_Native.Abstractions.Context;
-using Another_Mirai_Native.Abstractions.Enums;
 using me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI;
 using SkiaSharp;
 
 namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 {
-    public interface IOrderModel
-    {
-        bool ImplementFlag { get; set; }
-
-        /// <summary>
-        /// 优先级，越高越优先处理
-        /// </summary>
-        int Priority { get; set; }
-
-        string GetCommand();
-
-        bool CanExecute(string destStr);
-
-        Task<EventHandleResult> ExecuteAsync(GroupMessageContext e);
-
-        Task<EventHandleResult> ExecuteAsync(PrivateMessageContext e);
-    }
-
     public class MonitorConfigItem
     {
         public long GroupId { get; set; }

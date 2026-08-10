@@ -31,7 +31,6 @@ namespace me.cqp.luohuaming.SteamWatcher.Plugin
             MainSave.ImageDirectory = CommonHelper.GetAppImageDirectory();
 
             EnsureAssets();
-            RegisterOrderFunctions();
 
             API.Logger.Info("初始化", "加载配置");
             AppConfig appConfig = new(Path.Combine(MainSave.AppDirectory, "Config.json"));
@@ -79,22 +78,6 @@ namespace me.cqp.luohuaming.SteamWatcher.Plugin
             catch (Exception ex)
             {
                 API.Logger.Warn("初始化", $"生成 Assets 失败: {ex.Message}");
-            }
-        }
-
-        private void RegisterOrderFunctions()
-        {
-            foreach (var item in Assembly.GetExecutingAssembly().GetTypes())
-            {
-                if (item.IsInterface || item.IsAbstract)
-                    continue;
-                if (typeof(IOrderModel).IsAssignableFrom(item))
-                {
-                    IOrderModel obj = (IOrderModel)Activator.CreateInstance(item);
-                    if (obj.ImplementFlag == false)
-                        continue;
-                    MainSave.Instances.Add(obj);
-                }
             }
         }
 
