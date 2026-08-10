@@ -43,7 +43,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             }
             catch (Exception ex)
             {
-                MainSave.CQLog?.Error("GetAppAchievements", ex.Message + ex.StackTrace);
+                MainSave.Logger?.Error("GetAppAchievements", ex.Message + ex.StackTrace);
                 return null;
             }
         }

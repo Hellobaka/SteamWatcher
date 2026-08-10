@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
+using Another_Mirai_Native.Abstractions.Context;
+using Another_Mirai_Native.Abstractions.Enums;
 using me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI;
-using me.cqp.luohuaming.SteamWatcher.Sdk.Cqp.EventArgs;
 using SkiaSharp;
 
 namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
@@ -21,9 +23,9 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 
         bool CanExecute(string destStr);
 
-        FunctionResult Execute(CQGroupMessageEventArgs e);
+        Task<EventHandleResult> ExecuteAsync(GroupMessageContext e);
 
-        FunctionResult Execute(CQPrivateMessageEventArgs e);
+        Task<EventHandleResult> ExecuteAsync(PrivateMessageContext e);
     }
 
     public class MonitorConfigItem
@@ -146,7 +148,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
             if (!File.Exists(backgroundFilePath)
                 || !File.Exists(avatarPath))
             {
-                MainSave.CQLog.Warning("绘制图片", $"由于无法找到图片，无法进行绘制");
+                MainSave.Logger?.Warn("绘制图片", "由于无法找到图片，无法进行绘制");
                 return null;
             }
             if (BackgroundImageBuffer == null || BackgroundImageBuffer.Length == 0)

@@ -57,7 +57,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
             }
             if (!t)
             {
-                MainSave.CQLog?.Warning("下载游戏封面", $"{Name} 游戏封面下载失败");
+                MainSave.Logger?.Warn("下载游戏封面", $"{Name} 游戏封面下载失败");
                 return;
             }
         }

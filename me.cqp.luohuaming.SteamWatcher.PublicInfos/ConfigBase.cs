@@ -117,12 +117,12 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
                     File.WriteAllText(ConfigPath, "{}");
                 }
                 CurrentJObject = JObject.Parse(File.ReadAllText(ConfigPath));
-                MainSave.CQLog?.Debug("配置热重载", "OK");
+                MainSave.Logger?.Debug("配置热重载", "OK");
                 return true;
             }
             catch (Exception e)
             {
-                MainSave.CQLog?.Debug("配置热重载", $"LoadFail: {e.Message}");
+                MainSave.Logger?.Debug("配置热重载", $"LoadFail: {e.Message}");
                 return false;
             }
         }

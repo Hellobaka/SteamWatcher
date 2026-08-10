@@ -134,7 +134,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.GameGridImage
             }
             else
             {
-                MainSave.CQLog?.Warning("头像下载", "头像下载失败，跳过绘制");
+                MainSave.Logger?.Warn("头像下载", "头像下载失败，跳过绘制");
             }
             Parallel.ForEach(Games, new ParallelOptions
             {

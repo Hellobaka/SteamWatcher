@@ -22,7 +22,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             }
             catch (Exception ex)
             {
-                MainSave.CQLog?.Error("GetOwnedGames", ex.Message + ex.StackTrace);
+                MainSave.Logger?.Error("GetOwnedGames", ex.Message + ex.StackTrace);
                 return null;
             }
         }

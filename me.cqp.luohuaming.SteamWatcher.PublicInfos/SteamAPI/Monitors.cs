@@ -194,7 +194,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             }
             catch (Exception ex)
             {
-                MainSave.CQLog?.Error("监视时钟", ex.Message + ex.StackTrace);
+                MainSave.Logger?.Error("监视时钟", ex.Message + ex.StackTrace);
             }
             finally
             {
@@ -222,7 +222,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             }
             catch (Exception ex)
             {
-                MainSave.CQLog?.Error("获取成就列表", ex.Message + ex.StackTrace);
+                MainSave.Logger?.Error("获取成就列表", ex.Message + ex.StackTrace);
                 return [];
             }
         }

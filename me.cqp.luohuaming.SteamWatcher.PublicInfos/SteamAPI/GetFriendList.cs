@@ -23,7 +23,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             }
             catch (Exception ex)
             {
-                MainSave.CQLog.Error("GetFriendList", ex.Message + ex.StackTrace);
+                MainSave.Logger?.Error("GetFriendList", ex.Message + ex.StackTrace);
                 return null;
             }
         }

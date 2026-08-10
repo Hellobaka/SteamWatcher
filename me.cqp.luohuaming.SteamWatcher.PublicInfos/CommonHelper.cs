@@ -6,7 +6,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using me.cqp.luohuaming.SteamWatcher.Sdk.Cqp.Model;
 
 namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
 {
@@ -14,8 +13,12 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
     {
         public static string GetAppImageDirectory()
         {
-            var ImageDirectory = Path.Combine(Environment.CurrentDirectory, "data", "image\\");
-            return ImageDirectory;
+            if (!string.IsNullOrEmpty(MainSave.AppDirectory))
+            {
+                // GetAppDirectory() 为 D:\AMN2\data\plugins\<appId>\,上溯两级到框架根目录
+                return Path.GetFullPath(Path.Combine(MainSave.AppDirectory, "..", "..", "data", "image"));
+            }
+            return Path.Combine(Environment.CurrentDirectory, "data", "image");
         }
 
         public static void RemoveNewLine(this StringBuilder stringBuilder)
@@ -52,7 +55,7 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                MainSave.CQLog?.Warning("下载文件", e);
+                MainSave.Logger?.Warn("下载文件", e.ToString());
                 return false;
             }
         }

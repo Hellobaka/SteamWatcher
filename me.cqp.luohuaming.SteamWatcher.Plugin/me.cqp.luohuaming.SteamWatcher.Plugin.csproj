@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>annotations</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>me.cqp.luohuaming.SteamWatcher.Plugin</RootNamespace>
+    <AssemblyName>me.cqp.luohuaming.SteamWatcher.Plugin</AssemblyName>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <GenerateAmnManifest>true</GenerateAmnManifest>
+  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Another-Mirai-Native.Abstractions" Version="1.2.4" />
+	</ItemGroup>
+	<ItemGroup>
+    <ProjectReference Include="..\me.cqp.luohuaming.SteamWatcher.PublicInfos\me.cqp.luohuaming.SteamWatcher.PublicInfos.csproj" />
+  </ItemGroup>
+</Project>
