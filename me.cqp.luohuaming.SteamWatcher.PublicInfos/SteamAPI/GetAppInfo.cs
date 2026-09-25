@@ -28,8 +28,18 @@ namespace me.cqp.luohuaming.SteamWatcher.PublicInfos.SteamAPI
             result.EnsureSuccessStatusCode();
             var json = await result.Content.ReadAsStringAsync();
             var o = JObject.Parse(json);
-
-            appInfo = o[appId].ToObject<AppInfo>();
+            if (o.ContainsKey(appId))
+            {
+                appInfo = o[appId].ToObject<AppInfo>();
+            }
+            else
+            {
+                var findAppInfo = o.Children().FirstOrDefault(x => (x as JProperty).Value["data"]["steam_appid"].ToString() == appId);
+                if (findAppInfo != null) 
+                {
+                    appInfo = (findAppInfo as JProperty).Value.ToObject<AppInfo>();
+                }
+            }
             if (appInfo != null && !Caches.ContainsKey(appId))
             {
                 Caches.Add(appId, appInfo);
